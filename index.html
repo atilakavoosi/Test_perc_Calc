@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محاسبه‌گر تیزهوشان</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f5f7fa;
+  --surface:#ffffff;
+  --surface2:#f0f4f0;
+  --primary:#1a6b5c;
+  --primary-light:#e8f5f2;
+  --primary-dark:#0d4a3f;
+  --accent:#2d9e7b;
+  --text1:#1e2a25;
+  --text2:#4a6258;
+  --text3:#8aaa9f;
+  --border:#d4e4df;
+  --good:#1f8e5c;
+  --good-bg:#e6f7ef;
+  --warn:#b07d10;
+  --warn-bg:#fef3d7;
+  --bad:#c0392b;
+  --bad-bg:#fdecea;
+  --info:#1a5f8a;
+  --info-bg:#e5f1fa;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 2px 12px rgba(26,107,92,0.08);
+}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text1);line-height:1.6;min-height:100vh}
+.container{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+.header{text-align:center;padding:32px 0 24px}
+.header h1{font-size:26px;font-weight:700;color:var(--primary-dark);margin-bottom:6px}
+.header p{color:var(--text2);font-size:14px}
+.header-badge{display:inline-block;background:var(--primary-light);color:var(--primary);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:500;margin-bottom:12px}
+.tabs{display:flex;background:var(--surface);border-radius:var(--radius);padding:5px;box-shadow:var(--shadow);margin-bottom:24px;gap:4px}
+.tab{flex:1;padding:10px;border:none;background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:500;color:var(--text2);transition:all .2s}
+.tab:hover{background:var(--primary-light);color:var(--primary)}
+.tab.active{background:var(--primary);color:#fff}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
+.card-title{font-size:16px;font-weight:600;color:var(--primary-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card-title .badge{background:var(--primary);color:#fff;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:500}
+.card-title .coeff-badge{background:var(--primary-light);color:var(--primary);border-radius:20px;padding:2px 10px;font-size:12px}
+.subject-grid{display:grid;gap:14px}
+.subject-row{background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px}
+.subject-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+.subject-name{font-size:14px;font-weight:600;color:var(--text1)}
+.subject-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.meta-tag{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:500}
+.meta-q{background:#e8f0fe;color:#1a47a0}
+.meta-c{background:var(--primary-light);color:var(--primary)}
+.inputs-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.input-group label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.input-group input{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Vazirmatn',sans-serif;font-size:15px;text-align:center;color:var(--text1);background:#fff;transition:border-color .2s}
+.input-group input:focus{outline:none;border-color:var(--primary)}
+.input-group input.error{border-color:var(--bad);background:#fff8f8}
+.input-error{font-size:11px;color:var(--bad);margin-top:3px;min-height:16px}
+.sum-indicator{font-size:11px;color:var(--text3);margin-top:6px;text-align:left}
+.sum-indicator.ok{color:var(--good)}
+.sum-indicator.err{color:var(--bad)}
+.b2-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:8px}
+.btn-calc{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-family:'Vazirmatn',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px;box-shadow:0 4px 14px rgba(26,107,92,.25)}
+.btn-calc:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-calc:active{transform:translateY(0)}
+.btn-reset{width:100%;padding:10px;background:transparent;color:var(--text2);border:1.5px solid var(--border);border-radius:var(--radius);font-family:'Vazirmatn',sans-serif;font-size:14px;cursor:pointer;margin-top:8px;transition:all .2s}
+.btn-reset:hover{border-color:var(--bad);color:var(--bad)}
+.results-section{margin-top:28px}
+.section-title{font-size:18px;font-weight:700;color:var(--primary-dark);margin-bottom:16px;border-right:4px solid var(--primary);padding-right:12px}
+.score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.score-card{background:var(--surface);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow)}
+.score-card .label{font-size:12px;color:var(--text2);margin-bottom:6px}
+.score-card .value{font-size:28px;font-weight:700;color:var(--primary)}
+.score-card .sub{font-size:11px;color:var(--text3);margin-top:2px}
+.score-card.highlight{background:var(--primary);color:#fff}
+.score-card.highlight .label{color:rgba(255,255,255,0.8)}
+.score-card.highlight .value{color:#fff}
+.score-card.highlight .sub{color:rgba(255,255,255,0.7)}
+.results-table{width:100%;border-collapse:collapse;font-size:13px}
+.results-table th{background:var(--primary-light);color:var(--primary-dark);padding:10px 12px;text-align:center;font-weight:600;font-size:12px}
+.results-table th:first-child{text-align:right}
+.results-table td{padding:10px 12px;border-bottom:1px solid var(--border);text-align:center;color:var(--text1)}
+.results-table td:first-child{text-align:right;font-weight:500}
+.results-table tr:last-child td{border-bottom:none}
+.results-table tr:hover td{background:var(--primary-light)}
+.pct-bar{display:flex;align-items:center;gap:8px}
+.pct-fill{height:6px;border-radius:3px;background:var(--primary);min-width:3px;transition:width .5s}
+.pct-text{font-weight:600;min-width:40px}
+.pct-text.good{color:var(--good)}
+.pct-text.mid{color:var(--warn)}
+.pct-text.bad{color:var(--bad)}
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.analysis-card{background:var(--surface2);border-radius:var(--radius-sm);padding:14px}
+.analysis-card .a-title{font-size:12px;color:var(--text2);margin-bottom:4px}
+.analysis-card .a-value{font-size:15px;font-weight:600;color:var(--text1)}
+.insight-list{list-style:none;display:grid;gap:10px}
+.insight-item{padding:12px 14px;border-radius:var(--radius-sm);font-size:13px;line-height:1.7;border-right:3px solid transparent}
+.insight-item.good{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.insight-item.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.insight-item.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.insight-item.info{background:var(--info-bg);border-color:var(--info);color:var(--info)}
+.insight-title{font-weight:600;display:block;margin-bottom:2px}
+.tarz-section{margin-top:24px}
+.tarz-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;margin-bottom:14px}
+.tarz-toggle input[type=checkbox]{width:18px;height:18px;accent-color:var(--primary)}
+.tarz-toggle span{font-size:14px;color:var(--text2)}
+.tarz-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.tarz-label{font-size:12px;color:var(--text2);margin-bottom:4px;display:block}
+.tarz-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Vazirmatn',sans-serif;font-size:14px;background:#fff;transition:border-color .2s}
+.tarz-input:focus{outline:none;border-color:var(--primary)}
+.tarz-result{background:linear-gradient(135deg,var(--primary-dark),var(--primary));border-radius:var(--radius);padding:20px;color:#fff;text-align:center;margin-top:12px}
+.tarz-result .t-label{font-size:13px;opacity:.8;margin-bottom:6px}
+.tarz-result .t-value{font-size:40px;font-weight:700;letter-spacing:2px}
+.tarz-result .t-note{font-size:12px;opacity:.7;margin-top:8px}
+.tarz-estimated-note{font-size:11px;color:var(--warn);background:var(--warn-bg);padding:8px 12px;border-radius:var(--radius-sm);margin-top:8px}
+.settings-panel{display:none;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:20px}
+.settings-panel.open{display:block}
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.setting-item label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px}
+.setting-item input{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Vazirmatn',sans-serif;font-size:14px}
+.hidden{display:none!important}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.help-text{font-size:12px;color:var(--text3);text-align:center;margin-top:10px}
+.formula-box{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--text2);border-right:3px solid var(--primary-light);margin-top:8px;line-height:2}
+.formula-box code{background:var(--primary-light);color:var(--primary);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px}
+@media(max-width:600px){
+  .inputs-row{grid-template-columns:1fr 1fr 1fr}
+  .analysis-grid{grid-template-columns:1fr}
+  .tarz-inputs{grid-template-columns:1fr}
+  .b2-inputs{grid-template-columns:1fr 1fr 1fr}
+  .score-cards{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-badge">آزمون ورودی مدارس تیزهوشان و نمونه‌دولتی</div>
+    <h1>محاسبه‌گر درصد و تراز</h1>
+    <p>محاسبه دقیق درصد، نمره منفی، ضرایب و تراز تخمینی</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setMode('both')">📝 هر دو دفترچه</button>
+    <button class="tab" onclick="setMode('b1')">دفترچه ۱ — استعداد تحصیلی</button>
+    <button class="tab" onclick="setMode('b2')">دفترچه ۲ — استعداد تحلیلی</button>
+  </div>
+
+  <div id="b1-section">
+    <div class="card">
+      <div class="card-title">
+        دفترچه ۱ — استعداد تحصیلی
+        <span class="badge">۷۵ سؤال</span>
+        <span class="coeff-badge">مجموع وزن: 170</span>
+      </div>
+      <div class="subject-grid" id="subjects-grid"></div>
+    </div>
+  </div>
+
+  <div id="b2-section">
+    <div class="card">
+      <div class="card-title">
+        دفترچه ۲ — استعداد تحلیلی
+        <span class="badge">۵۰ سؤال</span>
+      </div>
+      <div class="b2-inputs">
+        <div class="input-group">
+          <label>✅ درست</label>
+          <input type="number" id="b2-correct" min="0" max="50" placeholder="0">
+        </div>
+        <div class="input-group">
+          <label>❌ غلط</label>
+          <input type="number" id="b2-wrong" min="0" max="50" placeholder="0">
+        </div>
+        <div class="input-group">
+          <label>⬜ نزده</label>
+          <input type="number" id="b2-blank" min="0" max="50" placeholder="0">
+        </div>
+      </div>
+      <div id="b2-sum-indicator" class="sum-indicator">مجموع: ۰ از ۵۰</div>
+      <div id="b2-error" class="input-error"></div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">محاسبه نتیجه ↓</button>
+  <button class="btn-reset" onclick="resetAll()">پاک کردن همه</button>
+
+  <div id="results-section" class="results-section hidden">
+    <div class="section-title">نتیجه آزمون</div>
+    <div class="score-cards" id="main-score-cards"></div>
+
+    <div id="b1-results-block">
+      <div class="card">
+        <div class="card-title">جزئیات دفترچه ۱</div>
+        <div style="overflow-x:auto">
+          <table class="results-table" id="b1-table">
+            <thead>
+              <tr>
+                <th>درس</th>
+                <th>درست</th>
+                <th>غلط</th>
+                <th>نزده</th>
+                <th>ضریب</th>
+                <th>نمره خالص</th>
+                <th>درصد درس</th>
+                <th>امتیاز وزنی</th>
+              </tr>
+            </thead>
+            <tbody id="b1-tbody"></tbody>
+          </table>
+        </div>
+        <div class="formula-box" id="b1-formula-box"></div>
+      </div>
+    </div>
+
+    <div id="b2-results-block" class="hidden">
+      <div class="card">
+        <div class="card-title">جزئیات دفترچه ۲</div>
+        <div id="b2-detail"></div>
+      </div>
+    </div>
+
+    <div class="card" id="analysis-card">
+      <div class="card-title">تحلیل عملکرد</div>
+      <ul class="insight-list" id="insights-list"></ul>
+    </div>
+
+    <div class="card" id="simulator-card">
+      <div class="card-title">شبیه‌ساز «اگر غلط کمتر می‌داشتم»</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">با کاهش تعداد غلط‌ها در کل آزمون، چه تغییری در درصد نهایی می‌افتد؟</p>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <label style="font-size:13px;color:var(--text2)">کاهش غلط به:</label>
+        <input type="range" id="sim-slider" min="0" max="50" step="1" oninput="updateSimulator()" style="flex:1;min-width:120px">
+        <span id="sim-label" style="font-size:13px;font-weight:600;color:var(--primary);min-width:90px;text-align:center"></span>
+      </div>
+      <div id="sim-result" style="margin-top:12px;font-size:14px;color:var(--text2)"></div>
+    </div>
+
+    <div class="card tarz-section">
+      <div class="card-title">محاسبه تراز</div>
+      <label class="tarz-toggle">
+        <input type="checkbox" id="tarz-custom" onchange="toggleTarzCustom()">
+        <span>وارد کردن میانگین و انحراف معیار واقعی (برای تراز آماری)</span>
+      </label>
+      <div id="tarz-custom-inputs" class="tarz-inputs hidden">
+        <div>
+          <span class="tarz-label">میانگین جامعه (M)</span>
+          <input type="number" class="tarz-input" id="tarz-mean" placeholder="مثلاً 45" oninput="calculateTarz()">
+        </div>
+        <div>
+          <span class="tarz-label">انحراف معیار (SD)</span>
+          <input type="number" class="tarz-input" id="tarz-sd" placeholder="مثلاً 18" oninput="calculateTarz()">
+        </div>
+      </div>
+      <div id="tarz-result-block"></div>
+    </div>
+  </div>
+
+  <p class="help-text">فرمول نمره خالص: درست − (غلط ÷ ۳) | نمره منفی برای هر پاسخ غلط: ۱/۳</p>
+</div>
+
+<script>
+const SUBJECTS = [
+    {id:'quran',  name:'قرآن و معارف اسلامی', total:10, coeff:2},
+    {id:'farsi',  name:'فارسی',                total:15, coeff:2},
+    {id:'social', name:'مطالعات اجتماعی',      total:10, coeff:2},
+    {id:'arabic', name:'عربی',                 total:10, coeff:1},
+    {id:'science',name:'علوم',                 total:15, coeff:3},
+    {id:'math',   name:'ریاضی',                total:15, coeff:3},
+];
+const B2_TOTAL = 50;
+const B1_WEIGHT_SUM = SUBJECTS.reduce((a,s)=>a+s.total*s.coeff,0); // 170
+const BOOKLET_WEIGHTS = { b1: 0.5, b2: 0.5 }; // practical/public-model default
+
+let currentMode = 'both';
+let calcResult = null;
+
+function init(){
+  buildSubjectInputs();
+  setMode('both');
+  wireAutoBlank();
+}
+
+function buildSubjectInputs(){
+  const grid = document.getElementById('subjects-grid');
+  grid.innerHTML = SUBJECTS.map(s=>`
+    <div class="subject-row" id="row-${s.id}">
+      <div class="subject-header">
+        <span class="subject-name">${s.name}</span>
+        <div class="subject-meta">
+          <span class="meta-tag meta-q">${s.total} سؤال</span>
+          <span class="meta-tag meta-c">ضریب ${s.coeff}</span>
+        </div>
+      </div>
+      <div class="inputs-row">
+        <div class="input-group">
+          <label>✅ درست</label>
+          <input type="number" id="${s.id}-correct" min="0" max="${s.total}" placeholder="0" oninput="syncBlank('${s.id}')">
+        </div>
+        <div class="input-group">
+          <label>❌ غلط</label>
+          <input type="number" id="${s.id}-wrong" min="0" max="${s.total}" placeholder="0" oninput="syncBlank('${s.id}')">
+        </div>
+        <div class="input-group">
+          <label>⬜ نزده</label>
+          <input type="number" id="${s.id}-blank" min="0" max="${s.total}" placeholder="خودکار/اختیاری" oninput="validateSubject('${s.id}')">
+        </div>
+      </div>
+      <div id="${s.id}-sum" class="sum-indicator">مجموع: ۰ از ${s.total}</div>
+      <div id="${s.id}-error" class="input-error"></div>
+    </div>
+  `).join('');
+}
+
+function wireAutoBlank(){
+  ['b2-correct','b2-wrong'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.addEventListener('input', ()=>syncB2Blank());
+  });
+  document.getElementById('b2-blank').addEventListener('input', validateB2);
+}
+
+function setMode(mode){
+  currentMode = mode;
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach((t,i)=> t.classList.toggle('active', ['both','b1','b2'][i]===mode));
+  document.getElementById('b1-section').classList.toggle('hidden', mode==='b2');
+  document.getElementById('b2-section').classList.toggle('hidden', mode==='b1');
+  document.getElementById('results-section').classList.add('hidden');
+}
+
+function readInt(id){
+  const raw = document.getElementById(id).value.trim();
+  if(raw === '') return null;
+  if(!/^[-+]?\d+$/.test(raw)) return NaN;
+  return Number(raw);
+}
+
+function syncBlank(subjectId){
+  const s = SUBJECTS.find(x=>x.id===subjectId);
+  const c = readInt(`${subjectId}-correct`);
+  const w = readInt(`${subjectId}-wrong`);
+  const blankEl = document.getElementById(`${subjectId}-blank`);
+  if(Number.isInteger(c) && Number.isInteger(w) && c >= 0 && w >= 0){
+    const derived = s.total - c - w;
+    if(derived >= 0){
+      blankEl.value = String(derived);
+    }
+  }
+  validateSubject(subjectId);
+}
+
+function syncB2Blank(){
+  const c = readInt('b2-correct');
+  const w = readInt('b2-wrong');
+  const blankEl = document.getElementById('b2-blank');
+  if(Number.isInteger(c) && Number.isInteger(w) && c >= 0 && w >= 0){
+    const derived = B2_TOTAL - c - w;
+    if(derived >= 0){
+      blankEl.value = String(derived);
+    }
+  }
+  validateB2();
+}
+
+function normalizeCounts(total, correctId, wrongId, blankId){
+  const c = readInt(correctId);
+  const w = readInt(wrongId);
+  const bRaw = readInt(blankId);
+  const errors = [];
+
+  if([c,w].some(v => Number.isNaN(v)) || (bRaw !== null && Number.isNaN(bRaw))){
+    errors.push('فقط عدد صحیح وارد کن.');
+    return {ok:false, errors};
+  }
+  if([c,w,bRaw].some(v => v !== null && v < 0)){
+    errors.push('عدد منفی مجاز نیست.');
+    return {ok:false, errors};
+  }
+  if(c === null || w === null){
+    errors.push('حداقل درست و غلط را وارد کن؛ نزده می‌تواند خودکار محاسبه شود.');
+    return {ok:false, errors};
+  }
+
+  let blank = bRaw;
+  if(blank === null){
+    blank = total - c - w;
+  }
+
+  if(!Number.isInteger(c) || !Number.isInteger(w) || !Number.isInteger(blank)){
+    errors.push('همه مقادیر باید عدد صحیح باشند.');
+    return {ok:false, errors};
+  }
+
+  if(c + w + blank !== total){
+    errors.push(`جمع درست + غلط + نزده باید برابر ${total} باشد. الان ${c + w + blank} شده است.`);
+    return {ok:false, errors};
+  }
+  return {ok:true, value:{correct:c, wrong:w, blank}};
+}
+
+function validateSubject(id){
+  const s = SUBJECTS.find(x=>x.id===id);
+  const ind = document.getElementById(`${id}-sum`);
+  const err = document.getElementById(`${id}-error`);
+  const result = normalizeCounts(s.total, `${id}-correct`, `${id}-wrong`, `${id}-blank`);
+
+  if(!result.ok){
+    ind.textContent = `مجموع: نامعتبر از ${s.total}`;
+    ind.className = 'sum-indicator err';
+    err.textContent = result.errors[0] || '';
+    return false;
+  }
+
+  const {correct, wrong, blank} = result.value;
+  ind.textContent = `مجموع: ${correct + wrong + blank} از ${s.total}`;
+  ind.className = 'sum-indicator ok';
+  err.textContent = '';
+  return true;
+}
+
+function validateB2(){
+  const ind = document.getElementById('b2-sum-indicator');
+  const err = document.getElementById('b2-error');
+  const result = normalizeCounts(B2_TOTAL, 'b2-correct', 'b2-wrong', 'b2-blank');
+
+  if(!result.ok){
+    ind.textContent = `مجموع: نامعتبر از ${B2_TOTAL}`;
+    ind.className = 'sum-indicator err';
+    err.textContent = result.errors[0] || '';
+    return false;
+  }
+
+  const {correct, wrong, blank} = result.value;
+  ind.textContent = `مجموع: ${correct + wrong + blank} از ${B2_TOTAL}`;
+  ind.className = 'sum-indicator ok';
+  err.textContent = '';
+  return true;
+}
+
+function checkAllValid(){
+  let ok = true;
+  if(currentMode !== 'b2'){
+    SUBJECTS.forEach(s=>{ if(!validateSubject(s.id)) ok = false; });
+  }
+  if(currentMode !== 'b1'){
+    if(!validateB2()) ok = false;
+  }
+  return ok;
+}
+
+function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }
+
+function calcSubject(s, correct, wrong, blank){
+  const netScore = correct - (wrong / 3);
+  const rawPct = (netScore / s.total) * 100;          // درس از 0 تا 100 (می‌تواند منفی هم شود)
+  const weighted = netScore * s.coeff;                // نمره وزنی درس
+  const missedByNeg = wrong / 3;                      // معادل حذف درست‌ها
+  const wrongPenalty = wrong * (1/3);
+  return {
+    ...s,
+    correct, wrong, blank,
+    netScore: round2(netScore),
+    rawPct: round2(rawPct),
+    weighted: round2(weighted),
+    missedByNeg: round2(missedByNeg),
+    wrongPenalty: round2(wrongPenalty)
+  };
+}
+
+function booklet1Percent(rows){
+  const totalWeighted = rows.reduce((a,r)=>a+r.weighted,0);
+  return round2((totalWeighted / B1_WEIGHT_SUM) * 100);
+}
+
+function booklet2Percent(row){
+  return round2((row.netScore / B2_TOTAL) * 100);
+}
+
+function combinedPercent(b1Pct, b2Pct){
+  if(typeof b1Pct !== 'number' && typeof b2Pct !== 'number') return 0;
+  if(typeof b1Pct !== 'number') return b2Pct;
+  if(typeof b2Pct !== 'number') return b1Pct;
+  return round2((b1Pct * BOOKLET_WEIGHTS.b1) + (b2Pct * BOOKLET_WEIGHTS.b2));
+}
+
+function calculate(){
+  if(!checkAllValid()){
+    alert('لطفاً ورودی‌ها را اصلاح کن. هر درس باید جمعِ درست + غلط + نزده‌اش دقیقاً برابر تعداد سؤال همان درس باشد.');
+    return;
+  }
+
+  let b1Result = null;
+  let b2Result = null;
+
+  if(currentMode !== 'b2'){
+    const rows = SUBJECTS.map(s=>{
+      const c = Number(document.getElementById(`${s.id}-correct`).value);
+      const w = Number(document.getElementById(`${s.id}-wrong`).value);
+      const b = Number(document.getElementById(`${s.id}-blank`).value);
+      return calcSubject(s, c, w, b);
+    });
+    const totalWeighted = rows.reduce((a,r)=>a+r.weighted,0);
+    const finalPct = booklet1Percent(rows);
+    const totalCorrect = rows.reduce((a,r)=>a+r.correct,0);
+    const totalWrong = rows.reduce((a,r)=>a+r.wrong,0);
+    const totalBlank = rows.reduce((a,r)=>a+r.blank,0);
+    b1Result = {
+      rows,
+      totalWeighted: round2(totalWeighted),
+      finalPct,
+      totalCorrect,
+      totalWrong,
+      totalBlank,
+      weightSum: B1_WEIGHT_SUM
+    };
+  }
+
+  if(currentMode !== 'b1'){
+    const c = Number(document.getElementById('b2-correct').value);
+    const w = Number(document.getElementById('b2-wrong').value);
+    const b = Number(document.getElementById('b2-blank').value);
+    const row = calcSubject({id:'aptitude',name:'استعداد تحلیلی',total:B2_TOTAL,coeff:1}, c, w, b);
+    const finalPct = booklet2Percent(row);
+    b2Result = {
+      row,
+      correct: c,
+      wrong: w,
+      blank: b,
+      netScore: row.netScore,
+      finalPct,
+      total: B2_TOTAL
+    };
+  }
+
+  calcResult = {b1Result, b2Result, mode: currentMode};
+  renderResults();
+}
+
+function renderResults(){
+  const {b1Result, b2Result} = calcResult;
+  const sec = document.getElementById('results-section');
+  sec.classList.remove('hidden');
+  sec.scrollIntoView({behavior:'smooth', block:'start'});
+
+  const cards = [];
+  if(b1Result){
+    cards.push({label:'درصد دفترچه ۱', value:`${b1Result.finalPct.toFixed(2)}%`, sub:'استعداد تحصیلی', highlight:true});
+    cards.push({label:'مجموع امتیاز وزنی', value:b1Result.totalWeighted.toFixed(2), sub:`از ${B1_WEIGHT_SUM}`});
+    cards.push({label:'کل درست', value:b1Result.totalCorrect, sub:`از ۷۵ سؤال`});
+    cards.push({label:'اثر نمره منفی', value:`−${(b1Result.totalWrong/3).toFixed(2)}`, sub:`از ${b1Result.totalWrong} غلط`});
+    cards.push({label:'تعداد نزده', value:b1Result.totalBlank, sub:'خودکار/محاسبه‌شده'});
+  }
+  if(b2Result){
+    cards.push({label:'درصد دفترچه ۲', value:`${b2Result.finalPct.toFixed(2)}%`, sub:'استعداد تحلیلی', highlight:!b1Result});
+    cards.push({label:'نمره خالص دفترچه ۲', value:b2Result.netScore.toFixed(2), sub:'با نمره منفی'});
+    cards.push({label:'تعداد درست دفترچه ۲', value:b2Result.correct, sub:'از ۵۰ سؤال'});
+    cards.push({label:'تعداد نزده دفترچه ۲', value:b2Result.blank, sub:'خودکار/محاسبه‌شده'});
+  }
+  if(b1Result && b2Result){
+    const combined = combinedPercent(b1Result.finalPct, b2Result.finalPct);
+    cards.push({label:'درصد کل آزمون', value:`${combined.toFixed(2)}%`, sub:'میانگین 50/50 دو دفترچه'});
+    cards.push({label:'نمره/تراز برآوردی', value:Math.round(combined * 1000).toLocaleString('fa-IR'), sub:'مدل رایجِ قابل‌نمایش'});
+  }
+
+  document.getElementById('main-score-cards').innerHTML = cards.map(c=>`
+    <div class="score-card${c.highlight?' highlight':''}">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}</div>
+      <div class="sub">${c.sub}</div>
+    </div>
+  `).join('');
+
+  const b1Block = document.getElementById('b1-results-block');
+  if(b1Result){
+    b1Block.classList.remove('hidden');
+    document.getElementById('b1-tbody').innerHTML = b1Result.rows.map(r=>{
+      const pctClass = r.rawPct >= 60 ? 'good' : r.rawPct >= 30 ? 'mid' : 'bad';
+      const barW = Math.max(0, Math.min(100, r.rawPct));
+      return `
+        <tr>
+          <td>${r.name}</td>
+          <td>${r.correct}</td>
+          <td>${r.wrong}</td>
+          <td>${r.blank}</td>
+          <td><b>${r.coeff}</b></td>
+          <td>${r.netScore.toFixed(2)}</td>
+          <td>
+            <div class="pct-bar">
+              <div class="pct-fill" style="width:${barW}%;max-width:60px"></div>
+              <span class="pct-text ${pctClass}">${r.rawPct.toFixed(1)}%</span>
+            </div>
+          </td>
+          <td>${r.weighted.toFixed(2)}</td>
+        </tr>
+      `;
+    }).join('');
+    document.getElementById('b1-formula-box').innerHTML = `
+      <b>فرمول:</b>
+      نمره خالص = <code>درست − (غلط ÷ ۳)</code> |
+      امتیاز وزنی = <code>نمره خالص × ضریب</code> |
+      درصد نهایی دفترچه ۱ = <code>${b1Result.totalWeighted.toFixed(2)} ÷ ${B1_WEIGHT_SUM} × ۱۰۰ = ${b1Result.finalPct.toFixed(2)}%</code>
+    `;
+  } else {
+    b1Block.classList.add('hidden');
+  }
+
+  const b2Block = document.getElementById('b2-results-block');
+  if(b2Result){
+    b2Block.classList.remove('hidden');
+    const pctClass = b2Result.finalPct >= 60 ? 'good' : b2Result.finalPct >= 30 ? 'mid' : 'bad';
+    document.getElementById('b2-detail').innerHTML = `
+      <div class="score-cards" style="margin-bottom:0">
+        <div class="score-card"><div class="label">درست</div><div class="value">${b2Result.correct}</div></div>
+        <div class="score-card"><div class="label">غلط</div><div class="value">${b2Result.wrong}</div></div>
+        <div class="score-card"><div class="label">نزده</div><div class="value">${b2Result.blank}</div></div>
+        <div class="score-card"><div class="label">نمره خالص</div><div class="value">${b2Result.netScore.toFixed(2)}</div><div class="sub">از ۵۰</div></div>
+        <div class="score-card highlight"><div class="label">درصد</div><div class="value ${pctClass}">${b2Result.finalPct.toFixed(2)}%</div></div>
+      </div>
+    `;
+  } else {
+    b2Block.classList.add('hidden');
+  }
+
+  buildInsights();
+  if(b1Result){
+    const maxWrong = b1Result.totalWrong;
+    const slider = document.getElementById('sim-slider');
+    slider.max = maxWrong;
+    slider.value = maxWrong;
+    updateSimulator();
+  }
+  document.getElementById('simulator-card').classList.toggle('hidden', !b1Result);
+  calculateTarz();
+}
+
+function buildInsights(){
+  const {b1Result, b2Result} = calcResult;
+  const items = [];
+
+  if(b1Result){
+    const best = [...b1Result.rows].sort((a,b)=>b.rawPct-a.rawPct)[0];
+    items.push({
+      cls:'good',
+      title:`نقطه قوت: ${best.name}`,
+      text:`با ${best.rawPct.toFixed(1)}% بهترین درصد را داری. این درس را حفظ کن.`
+    });
+
+    const highCoeff = b1Result.rows.filter(r=>r.coeff>=2);
+    const weakHigh = highCoeff.sort((a,b)=>a.rawPct-b.rawPct)[0];
+    if(weakHigh && weakHigh.rawPct < 50){
+      items.push({
+        cls:'bad',
+        title:`هشدار: ${weakHigh.name} — ضریب ${weakHigh.coeff}`,
+        text:`درصد این درس ${weakHigh.rawPct.toFixed(1)}% است. چون ضریب بالایی دارد، اثرش روی نتیجه نهایی زیاد است.`
+      });
+    }
+
+    b1Result.rows.forEach(r=>{
+      if(r.wrong >= 5){
+        items.push({
+          cls:'warn',
+          title:`نمره منفی زیاد: ${r.name}`,
+          text:`${r.wrong} پاسخ غلط = از دست دادن ${r.missedByNeg.toFixed(2)} نمره درست. اگر مطمئن نیستی، نزدن بهتر از غلط زدن است.`
+        });
+      }
+    });
+
+    b1Result.rows.forEach(r=>{
+      if(r.blank >= 6){
+        items.push({
+          cls:'info',
+          title:`سؤالات نزده زیاد: ${r.name}`,
+          text:`${r.blank} سؤال نزده. احتمالاً مدیریت زمان یا سرعت حل نیاز به تمرین دارد.`
+        });
+      }
+    });
+
+    if(b1Result.finalPct >= 70){
+      items.push({cls:'good', title:'عملکرد عالی در دفترچه ۱', text:`درصد نهایی ${b1Result.finalPct.toFixed(1)}% فوق‌العاده است.`});
+    } else if(b1Result.finalPct >= 50){
+      items.push({cls:'info', title:'عملکرد متوسط رو به خوب', text:`درصد ${b1Result.finalPct.toFixed(1)}%. با تقویت درس‌های ضریب بالا بهتر می‌شود.`});
+    } else {
+      items.push({cls:'bad', title:'نیاز به تلاش بیشتر', text:`درصد ${b1Result.finalPct.toFixed(1)}%. روی پایه‌ها و کاهش حدس‌های اشتباه کار کن.`});
+    }
+  }
+
+  if(b2Result){
+    if(b2Result.finalPct >= 60){
+      items.push({cls:'good', title:'دفترچه ۲: خوب', text:`درصد ${b2Result.finalPct.toFixed(1)}% در استعداد تحلیلی.`});
+    } else if(b2Result.finalPct < 30){
+      items.push({cls:'warn', title:'دفترچه ۲: نیاز به تقویت', text:`درصد ${b2Result.finalPct.toFixed(1)}%. تمرین هوش و تحلیل را بیشتر کن.`});
+    } else {
+      items.push({cls:'info', title:'دفترچه ۲: قابل‌قبول', text:`درصد ${b2Result.finalPct.toFixed(1)}% است و جای رشد دارد.`});
+    }
+  }
+
+  document.getElementById('insights-list').innerHTML = items.slice(0,8).map(it=>`
+    <li class="insight-item ${it.cls}">
+      <span class="insight-title">${it.title}</span>
+      ${it.text}
+    </li>
+  `).join('');
+}
+
+function updateSimulator(){
+  if(!calcResult || !calcResult.b1Result) return;
+  const {b1Result} = calcResult;
+  const slider = document.getElementById('sim-slider');
+  const reduce = parseInt(slider.value, 10);
+  const targetWrong = Math.max(0, b1Result.totalWrong - reduce);
+
+  // distribute wrong reduction proportionally across subjects
+  const ratio = b1Result.totalWrong > 0 ? (targetWrong / b1Result.totalWrong) : 0;
+  let simWeighted = 0;
+
+  b1Result.rows.forEach(r=>{
+    const simWrong = r.wrong * ratio;
+    const simNet = r.correct - (simWrong / 3);
+    simWeighted += simNet * r.coeff;
+  });
+
+  const simPct = (simWeighted / B1_WEIGHT_SUM) * 100;
+  const diff = simPct - b1Result.finalPct;
+
+  document.getElementById('sim-label').textContent = `${targetWrong} غلط`;
+  document.getElementById('sim-result').innerHTML = `
+    درصد جدید: <b style="color:var(--primary);font-size:16px">${simPct.toFixed(2)}%</b>
+    &nbsp;&nbsp;
+    تغییر: <b style="color:${diff>=0?'var(--good)':'var(--bad)'}">${diff>=0?'+':''}${diff.toFixed(2)}%</b>
+  `;
+}
+
+function toggleTarzCustom(){
+  const on = document.getElementById('tarz-custom').checked;
+  document.getElementById('tarz-custom-inputs').classList.toggle('hidden', !on);
+  calculateTarz();
+}
+
+function calculateTarz(){
+  if(!calcResult) return;
+  const {b1Result, b2Result} = calcResult;
+  const useCombined = !!(b1Result && b2Result);
+
+  const percentScore = useCombined
+    ? combinedPercent(b1Result.finalPct, b2Result.finalPct)
+    : (b1Result ? b1Result.finalPct : (b2Result ? b2Result.finalPct : null));
+
+  if(percentScore === null || typeof percentScore !== 'number') return;
+
+  const useCustom = document.getElementById('tarz-custom').checked;
+  let mean, sd, isEstimated = false;
+  let formulaText = '';
+  let titleText = '';
+
+  if(useCustom){
+    mean = parseFloat(document.getElementById('tarz-mean').value);
+    sd = parseFloat(document.getElementById('tarz-sd').value);
+    if(!Number.isFinite(mean) || !Number.isFinite(sd) || sd <= 0){
+      document.getElementById('tarz-result-block').innerHTML =
+        '<p style="font-size:13px;color:var(--text3);margin-top:8px">میانگین و انحراف معیار معتبر را وارد کن.</p>';
+      return;
+    }
+    isEstimated = false;
+    const T = 1000 * ((percentScore - mean) / sd) + 5000;
+    const tRounded = Math.round(T);
+    titleText = 'تراز آماری';
+    formulaText = `T = 1000 × ((${percentScore.toFixed(1)} − ${mean}) ÷ ${sd}) + 5000`;
+    document.getElementById('tarz-result-block').innerHTML = `
+      <div class="tarz-result">
+        <div class="t-label">${titleText}</div>
+        <div class="t-value">${tRounded.toLocaleString('fa-IR')}</div>
+        <div class="t-note">بر اساس: میانگین=${mean} | انحراف معیار=${sd}</div>
+        <div class="t-note">فرمول: ${formulaText}</div>
+      </div>
+    `;
+  } else {
+    // educational / practical public-model estimate: score percentage * 1000
+    isEstimated = true;
+    const tRounded = Math.round(percentScore * 1000);
+    titleText = 'تراز/نمره برآوردی';
+    formulaText = `نمره کل ≈ درصد کل × 1000`;
+    document.getElementById('tarz-result-block').innerHTML = `
+      <div class="tarz-result">
+        <div class="t-label">${titleText}</div>
+        <div class="t-value">${tRounded.toLocaleString('fa-IR')}</div>
+        <div class="t-note">بر اساس درصد کل: ${percentScore.toFixed(2)}%</div>
+        <div class="t-note">فرمول: ${formulaText}</div>
+      </div>
+      <div class="tarz-estimated-note">
+        ⚠️ این مقدار در حالت پیش‌فرض، برآوردی/آموزشی است. تراز رسمی دقیق فقط با داده‌های آماری همان آزمون و جامعه شرکت‌کنندگان قابل محاسبه است.
+      </div>
+    `;
+  }
+}
+
+function resetAll(){
+  SUBJECTS.forEach(s=>{
+    ['correct','wrong','blank'].forEach(f=>{
+      const el = document.getElementById(`${s.id}-${f}`);
+      if(el) el.value = '';
+    });
+    const sum = document.getElementById(`${s.id}-sum`);
+    if(sum){
+      sum.textContent = `مجموع: ۰ از ${s.total}`;
+      sum.className = 'sum-indicator';
+    }
+    const err = document.getElementById(`${s.id}-error`);
+    if(err) err.textContent = '';
+  });
+
+  ['b2-correct','b2-wrong','b2-blank'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('b2-sum-indicator').textContent = 'مجموع: ۰ از ۵۰';
+  document.getElementById('b2-sum-indicator').className = 'sum-indicator';
+  document.getElementById('b2-error').textContent = '';
+  document.getElementById('results-section').classList.add('hidden');
+  document.getElementById('tarz-custom').checked = false;
+  document.getElementById('tarz-custom-inputs').classList.add('hidden');
+  document.getElementById('tarz-result-block').innerHTML = '';
+  document.getElementById('sim-result').innerHTML = '';
+  document.getElementById('sim-label').textContent = '';
+  calcResult = null;
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+<footer style="
+  margin-top:40px;
+  padding:24px 16px;
+  text-align:center;
+  border-top:1px solid #d4e4df;
+  background:#ffffff;
+  font-family:'Vazirmatn',sans-serif;
+">
+
+  <!-- Title -->
+  <div style="
+    font-size:16px;
+    font-weight:700;
+    color:#1a6b5c;
+    margin-bottom:6px;
+  ">
+    محاسبه‌گر هوشمند آزمون تیزهوشان
+  </div>
+
+  <!-- Name -->
+  <div style="
+    font-size:15px;
+    color:#194434;
+    margin-bottom:9px;
+  ">
+    طراحی و توسعه توسط آتیلا کاووسی
+  </div>
+
+  <!-- Phone -->
+  <div style="
+    font-size:13px;
+    color:#4a6258;
+    direction:ltr;
+    unicode-bidi:embed;
+  ">
+    Telegram: @atilakavoosi
+  </div>
+
+  <!-- Copyright -->
+  <div style="
+    margin-top:12px;
+    font-size:11px;
+    color:#a0b3ad;
+  ">
+    © 2026 All Rights Reserved
+  </div>
+
+</footer>
+</body>
+</html>
