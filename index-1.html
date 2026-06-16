@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>سوپر سرویس آزمون — تیزهوشان</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f0f4f2;--surface:#fff;--surface2:#f4f8f6;--surface3:#edf3f0;
+  --primary:#1a6b5c;--primary-h:#155749;--primary-l:#e6f4f1;--primary-l2:#cce8e2;--primary-d:#0d4a3f;
+  --accent:#2d9e7b;
+  --t1:#1a2622;--t2:#3d5a50;--t3:#7a9d94;--t4:#b0cdc7;
+  --border:#cfe0da;
+  --good:#1a8c58;--good-bg:#e6f5ed;
+  --warn:#b07010;--warn-bg:#fef4da;
+  --bad:#c0392b;--bad-bg:#fdecea;
+  --info:#1a5f8a;--info-bg:#e5f1fa;
+  --r:12px;--r-sm:8px;--r-xs:5px;
+  --sh:0 2px 12px rgba(0,0,0,.07);--sh-md:0 4px 20px rgba(0,0,0,.10);
+}
+body{font-family:'Vazirmatn',system-ui,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;min-height:100vh;-webkit-tap-highlight-color:transparent}
+.container{max-width:900px;margin:0 auto;padding:20px 14px 80px}
+.hidden{display:none!important}
+
+/* ─ HEADER ─ */
+.app-header{text-align:center;padding:24px 0 18px}
+.app-header-badge{display:inline-block;background:var(--primary-l);color:var(--primary);border-radius:20px;padding:3px 14px;font-size:11px;font-weight:600;letter-spacing:.3px;margin-bottom:10px}
+.app-header h1{font-size:22px;font-weight:800;color:var(--primary-d);margin-bottom:3px}
+.app-header p{color:var(--t3);font-size:12px}
+
+/* ─ APP TABS ─ */
+.app-tabs{display:flex;background:var(--surface);border-radius:var(--r);padding:5px;box-shadow:var(--sh);margin-bottom:18px;gap:4px}
+.app-tab{flex:1;padding:11px 8px;border:none;background:transparent;border-radius:var(--r-sm);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;color:var(--t2);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.2px}
+.app-tab:hover{background:var(--primary-l);color:var(--primary)}
+.app-tab.active{background:var(--primary);color:#fff}
+
+/* ─ SHARED ─ */
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:18px;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:700;color:var(--primary-d);margin-bottom:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{background:var(--primary);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600}
+.badge-soft{background:var(--primary-l);color:var(--primary);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600}
+.score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:16px}
+.score-card{background:var(--surface);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--sh)}
+.score-card .sc-label{font-size:11px;color:var(--t2);margin-bottom:5px}
+.score-card .sc-value{font-size:24px;font-weight:700;color:var(--primary);line-height:1.1}
+.score-card .sc-sub{font-size:10px;color:var(--t3);margin-top:3px}
+.score-card.hl{background:var(--primary)}
+.score-card.hl .sc-label,.score-card.hl .sc-sub{color:rgba(255,255,255,.75)}
+.score-card.hl .sc-value{color:#fff}
+.insight-list{list-style:none;display:grid;gap:8px}
+.insight-item{padding:11px 13px;border-radius:var(--r-sm);font-size:12px;line-height:1.7;border-right:3px solid transparent}
+.insight-item.good{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+.insight-item.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.insight-item.bad{background:var(--bad-bg);border-color:var(--bad);color:var(--bad)}
+.insight-item.info{background:var(--info-bg);border-color:var(--info);color:var(--info)}
+.insight-title{font-weight:700;display:block;margin-bottom:1px}
+.section-title{font-size:17px;font-weight:800;color:var(--primary-d);margin-bottom:14px;border-right:4px solid var(--primary);padding-right:11px}
+.formula-box{background:var(--surface2);border-radius:var(--r-sm);padding:11px 14px;font-size:12px;color:var(--t2);border-right:3px solid var(--primary-l2);margin-top:10px;line-height:2}
+.formula-box code{background:var(--primary-l);color:var(--primary);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:11px}
+
+/* ═══ CALCULATOR ═══ */
+.calc-tabs{display:flex;background:var(--surface);border-radius:var(--r);padding:5px;box-shadow:var(--sh);margin-bottom:18px;gap:4px}
+.calc-tab{flex:1;padding:9px 6px;border:none;background:transparent;border-radius:var(--r-sm);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;color:var(--t2);transition:all .2s}
+.calc-tab:hover{background:var(--primary-l);color:var(--primary)}
+.calc-tab.active{background:var(--primary);color:#fff}
+.subj-grid{display:grid;gap:12px}
+.subj-row{background:var(--surface2);border-radius:var(--r-sm);padding:13px 15px}
+.subj-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;gap:8px}
+.subj-name{font-size:13px;font-weight:700;color:var(--t1)}
+.subj-meta{display:flex;gap:6px;align-items:center}
+.meta-q{background:#e8f0fe;color:#1a47a0;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.meta-c{background:var(--primary-l);color:var(--primary);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.inp-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.inp-group label{display:block;font-size:10px;color:var(--t2);margin-bottom:3px;font-weight:600}
+.inp-group input{width:100%;padding:7px 8px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:15px;text-align:center;color:var(--t1);background:#fff;transition:border-color .18s}
+.inp-group input:focus{outline:none;border-color:var(--primary)}
+.sum-ind{font-size:10px;color:var(--t3);margin-top:5px}
+.sum-ind.ok{color:var(--good)}
+.sum-ind.err{color:var(--bad)}
+.inp-error{font-size:10px;color:var(--bad);margin-top:2px;min-height:14px}
+.b2-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px}
+.btn-calc{width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:var(--r);font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;box-shadow:0 4px 14px rgba(26,107,92,.28);letter-spacing:.3px}
+.btn-calc:hover{background:var(--primary-h);transform:translateY(-1px)}
+.btn-calc:active{transform:translateY(0)}
+.btn-reset{width:100%;padding:10px;background:transparent;color:var(--t2);border:1.5px solid var(--border);border-radius:var(--r);font-family:'Vazirmatn',sans-serif;font-size:13px;cursor:pointer;margin-top:8px;transition:all .18s}
+.btn-reset:hover{border-color:var(--bad);color:var(--bad)}
+.results-section{margin-top:24px}
+.res-table{width:100%;border-collapse:collapse;font-size:12px}
+.res-table th{background:var(--primary-l);color:var(--primary-d);padding:9px 10px;text-align:center;font-weight:700;font-size:11px}
+.res-table th:first-child{text-align:right}
+.res-table td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:center}
+.res-table td:first-child{text-align:right;font-weight:600}
+.res-table tr:last-child td{border-bottom:none}
+.res-table tr:hover td{background:var(--primary-l)}
+.pct-bar{display:flex;align-items:center;gap:6px}
+.pct-fill{height:5px;border-radius:3px;background:var(--primary);min-width:2px}
+.pct-val{font-weight:700;font-size:12px;min-width:38px}
+.pct-val.good{color:var(--good)}
+.pct-val.mid{color:var(--warn)}
+.pct-val.bad{color:var(--bad)}
+.tarz-toggle{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none;margin-bottom:12px}
+.tarz-toggle input[type=checkbox]{width:17px;height:17px;accent-color:var(--primary)}
+.tarz-toggle span{font-size:13px;color:var(--t2)}
+.tarz-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.tarz-lbl{font-size:11px;color:var(--t2);margin-bottom:3px;display:block;font-weight:600}
+.tarz-inp{width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:13px;background:#fff;transition:border-color .18s}
+.tarz-inp:focus{outline:none;border-color:var(--primary)}
+.tarz-result-card{background:linear-gradient(135deg,var(--primary-d),var(--primary));border-radius:var(--r);padding:18px;color:#fff;text-align:center;margin-top:10px}
+.tarz-result-card .trc-label{font-size:12px;opacity:.8;margin-bottom:5px}
+.tarz-result-card .trc-val{font-size:38px;font-weight:800;letter-spacing:2px;line-height:1}
+.tarz-result-card .trc-note{font-size:11px;opacity:.65;margin-top:6px}
+.tarz-est-note{font-size:11px;color:var(--warn);background:var(--warn-bg);padding:7px 11px;border-radius:var(--r-sm);margin-top:7px}
+.help-text{font-size:11px;color:var(--t3);text-align:center;margin-top:9px}
+
+/* ═══ EXAM MODULE ═══ */
+.exam-mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.exam-mode-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:18px 10px;text-align:center;cursor:pointer;transition:all .18s;user-select:none}
+.exam-mode-card:hover{border-color:var(--primary);background:var(--primary-l)}
+.exam-mode-card.sel{border-color:var(--primary);background:var(--primary);color:#fff}
+.emc-icon{font-size:24px;margin-bottom:6px}
+.emc-num{font-size:28px;font-weight:800;line-height:1;margin-bottom:2px}
+.emc-desc{font-size:11px;opacity:.8}
+.emc-sub{font-size:10px;margin-top:3px;opacity:.7}
+.exam-mode-card.sel .emc-desc,.exam-mode-card.sel .emc-sub{color:rgba(255,255,255,.8)}
+
+/* Key input */
+.key-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.key-tab{padding:6px 13px;border:1.5px solid var(--border);border-radius:18px;background:transparent;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:600;color:var(--t2);transition:all .18s}
+.key-tab:hover{border-color:var(--primary);color:var(--primary)}
+.key-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.key-textarea{width:100%;min-height:100px;padding:11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:13px;resize:vertical;direction:ltr;background:#fff;line-height:1.7;transition:border-color .18s}
+.key-textarea:focus{outline:none;border-color:var(--primary)}
+.key-parse-btn{padding:9px 16px;background:var(--primary);color:#fff;border:none;border-radius:var(--r-sm);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:700;margin-top:8px;transition:all .18s}
+.key-parse-btn:hover{background:var(--primary-h)}
+.key-status{font-size:11px;margin-top:6px;padding:7px 11px;border-radius:var(--r-sm);display:none}
+.key-status.ok{background:var(--good-bg);color:var(--good);display:block}
+.key-status.err{background:var(--bad-bg);color:var(--bad);display:block}
+.key-status.warn{background:var(--warn-bg);color:var(--warn);display:block}
+.key-manual-scroll{max-height:280px;overflow-y:auto;padding:2px}
+.key-manual-inner{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:5px}
+.km-row{display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--surface2);border-radius:6px}
+.km-num{font-size:11px;font-weight:700;color:var(--t3);min-width:22px;text-align:center}
+.km-btn{width:34px;height:28px;border:1.5px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:11px;font-weight:700;color:var(--t2);transition:all .1s}
+.km-btn:hover{background:var(--primary-l);border-color:var(--primary);color:var(--primary)}
+.km-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.pdf-dz{border:2px dashed var(--border);border-radius:var(--r);padding:20px;text-align:center;cursor:pointer;transition:all .18s;position:relative}
+.pdf-dz:hover{border-color:var(--primary);background:var(--primary-l)}
+.pdf-dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.pdf-dz-icon{font-size:26px;margin-bottom:5px}
+.pdf-dz p{font-size:12px;color:var(--t2)}
+.key-preview-wrap{margin-top:12px;padding:11px 13px;background:var(--surface2);border-radius:var(--r-sm);border:1.5px solid var(--primary-l2)}
+.kp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.kp-label{font-size:12px;font-weight:700;color:var(--primary)}
+.kp-clear{padding:3px 9px;font-size:10px;background:transparent;border:1px solid var(--bad);border-radius:9px;color:var(--bad);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:600}
+.kp-badges{display:flex;flex-wrap:wrap;gap:4px;max-height:90px;overflow-y:auto}
+.kp-badge{font-size:10px;padding:2px 7px;border-radius:9px;background:var(--primary-l);color:var(--primary);font-weight:600}
+.btn-start{width:100%;padding:15px;background:linear-gradient(135deg,var(--primary-d),var(--primary));color:#fff;border:none;border-radius:var(--r);font-family:'Vazirmatn',sans-serif;font-size:16px;font-weight:800;cursor:pointer;transition:all .22s;box-shadow:0 4px 20px rgba(26,107,92,.38);letter-spacing:.5px}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(26,107,92,.44)}
+.btn-start:active{transform:none}
+
+/* Running */
+.exam-header{position:sticky;top:0;z-index:200;background:var(--primary-d);color:#fff;padding:10px 14px;border-radius:0 0 14px 14px;box-shadow:0 4px 20px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.eh-timer-wrap{display:flex;flex-direction:column;align-items:center;min-width:76px}
+.eh-timer-lbl{font-size:9px;opacity:.65;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1px}
+.eh-timer{font-size:24px;font-weight:800;letter-spacing:3px;line-height:1;font-variant-numeric:tabular-nums}
+.eh-timer.t-warn{color:#f9c74f}
+.eh-timer.t-crit{color:#ff6b6b;animation:blink .7s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+.eh-prog{flex:1;text-align:center;min-width:110px}
+.eh-prog-text{font-size:12px;opacity:.85;margin-bottom:5px}
+.eh-pbar{height:4px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
+.eh-pbar-fill{height:100%;background:#fff;border-radius:2px;transition:width .3s}
+.btn-end-exam{padding:8px 14px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.32);border-radius:var(--r-sm);color:#fff;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:700;transition:all .18s;white-space:nowrap}
+.btn-end-exam:hover{background:var(--bad);border-color:var(--bad)}
+
+/* Sheet filters */
+.sheet-filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.sf-btn{padding:6px 11px;border:1.5px solid var(--border);border-radius:16px;background:var(--surface);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:11px;font-weight:600;color:var(--t2);transition:all .15s;display:flex;align-items:center;gap:4px}
+.sf-btn:hover{border-color:var(--primary);color:var(--primary)}
+.sf-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.sf-count{font-size:10px;background:var(--primary-l);color:var(--primary);border-radius:8px;padding:0 5px;font-weight:700;line-height:1.5}
+.sf-btn.active .sf-count{background:rgba(255,255,255,.22);color:#fff}
+
+/* Subject divider */
+.subj-divider{padding:6px 11px;background:var(--primary-l);border-radius:var(--r-sm);font-size:11px;font-weight:700;color:var(--primary);margin:10px 0 5px;display:flex;align-items:center;justify-content:space-between}
+.subj-divider-info{font-size:10px;font-weight:500;opacity:.75}
+
+/* Q row */
+.q-rows{display:grid;gap:4px}
+.q-row{display:flex;align-items:center;gap:7px;padding:6px 9px;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);transition:all .12s;min-height:46px}
+.q-row.interactive:hover{border-color:var(--primary);background:var(--primary-l)}
+.q-row.has-answer{border-color:var(--accent)}
+.q-row.is-marked{border-color:var(--warn);background:var(--warn-bg)}
+.q-row.r-correct{border-color:var(--good);background:var(--good-bg)}
+.q-row.r-wrong{border-color:var(--bad);background:var(--bad-bg)}
+.q-num{font-size:11px;font-weight:700;color:var(--t3);min-width:20px;text-align:center;flex-shrink:0}
+.q-opts{display:flex;gap:4px;flex:1}
+.q-opt{width:34px;height:32px;border:1.5px solid var(--border);border-radius:6px;background:transparent;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:11px;font-weight:700;color:var(--t2);transition:all .1s;flex-shrink:0}
+.q-opt:hover{background:var(--primary-l);border-color:var(--primary);color:var(--primary)}
+.q-opt.sel{background:var(--primary);border-color:var(--primary);color:#fff}
+.q-opt.opt-c{background:var(--good);border-color:var(--good);color:#fff}
+.q-opt.opt-w{background:var(--bad);border-color:var(--bad);color:#fff}
+.q-opt.opt-ckey{border-color:var(--good);color:var(--good);font-weight:800;background:transparent}
+.q-opt:disabled{cursor:default}
+.q-mark-btn{width:26px;height:26px;border:1.5px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .1s;flex-shrink:0;color:var(--t3)}
+.q-mark-btn:hover{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.q-mark-btn.marked{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)}
+.q-res-icon{font-size:13px;min-width:16px;text-align:center;flex-shrink:0}
+
+/* Results */
+.er-hero{background:linear-gradient(135deg,var(--primary-d),var(--primary));border-radius:var(--r);padding:26px;text-align:center;color:#fff;margin-bottom:16px}
+.erh-label{font-size:12px;opacity:.78;margin-bottom:7px}
+.erh-score{font-size:42px;font-weight:800;line-height:1.1}
+.erh-sub{font-size:12px;opacity:.7;margin-top:5px}
+.erh-btns{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.btn-ghost{padding:8px 16px;background:rgba(255,255,255,.13);border:1.5px solid rgba(255,255,255,.38);border-radius:var(--r-sm);color:#fff;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:700;transition:all .18s}
+.btn-ghost:hover{background:rgba(255,255,255,.25)}
+.rs-filters{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.rs-btn{padding:5px 10px;border:1.5px solid var(--border);border-radius:14px;background:var(--surface);cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:11px;color:var(--t2);transition:all .15s}
+.rs-btn:hover{border-color:var(--primary);color:var(--primary)}
+.rs-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* Confirm dialog */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.54);z-index:999;display:flex;align-items:center;justify-content:center;padding:14px}
+.dlg{background:#fff;border-radius:var(--r);padding:26px;max-width:330px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.32);text-align:center}
+.dlg h3{font-size:17px;font-weight:800;color:var(--primary-d);margin-bottom:9px}
+.dlg p{font-size:13px;color:var(--t2);margin-bottom:18px;line-height:1.7}
+.dlg-btns{display:flex;gap:9px}
+.dlg-btns button{flex:1;padding:11px;border:none;border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s}
+.dlg-yes{background:var(--bad);color:#fff}
+.dlg-yes:hover{background:#a93226}
+.dlg-no{background:var(--surface2);color:var(--t2);border:1.5px solid var(--border)!important}
+.dlg-no:hover{border-color:var(--primary)!important;color:var(--primary)}
+
+/* Responsive */
+@media(max-width:600px){
+  .score-cards{grid-template-columns:1fr 1fr}
+  .tarz-inputs{grid-template-columns:1fr}
+  .exam-mode-grid{grid-template-columns:1fr}
+  .exam-header{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .q-opt{width:30px;height:28px;font-size:10px}
+}
+
+/* Key-review highlighting & history UI */
+.km-row.km-missing{border:1.5px solid var(--bad)}
+.km-row.km-conflict{border:1.5px solid var(--warn);background:var(--warn-bg)}
+.btn-soft{padding:7px 14px;font-size:11px;font-weight:700;border-radius:var(--r-sm);cursor:pointer;font-family:'Vazirmatn',sans-serif;transition:all .15s;border:1.5px solid transparent}
+.btn-soft.primary{color:var(--primary);border-color:var(--primary-l2);background:var(--primary-l)}
+.btn-soft.danger{color:var(--bad);border-color:var(--bad-bg);background:var(--bad-bg)}
+.btn-soft:hover{transform:translateY(-1px)}
+.hist-item{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hist-item-meta{font-size:13px;font-weight:700;color:var(--t1)}
+.hist-item-date{font-size:11px;color:var(--t3);margin-top:2px}
+.hist-item-score{text-align:center;min-width:84px}
+.hist-item-score .hi-val{font-size:19px;font-weight:800;color:var(--primary);line-height:1.2}
+.hist-item-score .hi-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.hist-item-actions{display:flex;gap:6px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="app-header-badge">آزمون ورودی مدارس تیزهوشان و نمونه‌دولتی</div>
+  <h1>سوپر سرویس آزمون</h1>
+  <p>محاسبه‌گر دقیق + آزمون زنده + تصحیح خودکار</p>
+</div>
+
+<!-- APP TABS -->
+<div class="app-tabs">
+  <button class="app-tab active" id="atab-calc" onclick="setAppTab('calc')">🧮 محاسبه‌گر</button>
+  <button class="app-tab" id="atab-exam" onclick="setAppTab('exam')">⏱️ آزمون زنده</button>
+  <button class="app-tab" id="atab-hist" onclick="setAppTab('hist')">📊 سابقه</button>
+</div>
+
+<!-- ═══════════════════ CALCULATOR ═══════════════════ -->
+<div id="sec-calc">
+  <div class="calc-tabs">
+    <button class="calc-tab active" onclick="setMode('both')">📝 هر دو دفترچه</button>
+    <button class="calc-tab" onclick="setMode('b1')">دفترچه ۱ — تحصیلی</button>
+    <button class="calc-tab" onclick="setMode('b2')">دفترچه ۲ — تحلیلی</button>
+  </div>
+
+  <div id="b1-sec">
+    <div class="card">
+      <div class="card-title">دفترچه ۱ — استعداد تحصیلی <span class="badge">۷۵ سؤال</span> <span class="badge-soft">وزن: ۱۷۰</span></div>
+      <div class="subj-grid" id="subj-grid"></div>
+    </div>
+  </div>
+
+  <div id="b2-sec">
+    <div class="card">
+      <div class="card-title">دفترچه ۲ — استعداد تحلیلی <span class="badge">۵۰ سؤال</span></div>
+      <div class="b2-inputs">
+        <div class="inp-group"><label>✅ درست</label><input type="number" id="b2-c" min="0" max="50" placeholder="0"></div>
+        <div class="inp-group"><label>❌ غلط</label><input type="number" id="b2-w" min="0" max="50" placeholder="0"></div>
+        <div class="inp-group"><label>⬜ نزده</label><input type="number" id="b2-b" min="0" max="50" placeholder="خودکار"></div>
+      </div>
+      <div id="b2-sum" class="sum-ind">مجموع: ۰ از ۵۰</div>
+      <div id="b2-err" class="inp-error"></div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">محاسبه نتیجه ↓</button>
+  <button class="btn-reset" onclick="resetAll()">پاک کردن همه</button>
+
+  <div id="results-sec" class="results-section hidden">
+    <div class="section-title">نتیجه آزمون</div>
+    <div class="score-cards" id="calc-cards"></div>
+    <div id="b1-res-block">
+      <div class="card">
+        <div class="card-title">جزئیات دفترچه ۱</div>
+        <div style="overflow-x:auto">
+          <table class="res-table">
+            <thead><tr><th>درس</th><th>درست</th><th>غلط</th><th>نزده</th><th>ضریب</th><th>نمره خالص</th><th>درصد</th><th>امتیاز وزنی</th></tr></thead>
+            <tbody id="b1-tbody"></tbody>
+          </table>
+        </div>
+        <div class="formula-box" id="b1-formula"></div>
+      </div>
+    </div>
+    <div id="b2-res-block" class="hidden">
+      <div class="card"><div class="card-title">جزئیات دفترچه ۲</div><div id="b2-detail"></div></div>
+    </div>
+    <div class="card"><div class="card-title">تحلیل عملکرد</div><ul class="insight-list" id="calc-insights"></ul></div>
+    <div class="card" id="sim-card">
+      <div class="card-title">شبیه‌ساز «اگر غلط کمتر می‌داشتم»</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:12px">با کاهش غلط‌ها، درصد نهایی چه می‌شود؟</p>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--t2)">کاهش غلط به:</span>
+        <input type="range" id="sim-slider" min="0" max="50" step="1" oninput="updateSim()" style="flex:1;min-width:90px;accent-color:var(--primary)">
+        <span id="sim-lbl" style="font-size:12px;font-weight:700;color:var(--primary);min-width:70px;text-align:center"></span>
+      </div>
+      <div id="sim-res" style="margin-top:10px;font-size:13px;color:var(--t2)"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">محاسبه تراز</div>
+      <label class="tarz-toggle"><input type="checkbox" id="tarz-custom" onchange="toggleTarz()"><span>وارد کردن میانگین و انحراف معیار واقعی</span></label>
+      <div id="tarz-inp-wrap" class="tarz-inputs hidden">
+        <div><span class="tarz-lbl">میانگین جامعه (M)</span><input type="number" class="tarz-inp" id="tarz-m" placeholder="مثلاً 45" oninput="calcTarz()"></div>
+        <div><span class="tarz-lbl">انحراف معیار (SD)</span><input type="number" class="tarz-inp" id="tarz-sd" placeholder="مثلاً 18" oninput="calcTarz()"></div>
+      </div>
+      <div id="tarz-res"></div>
+    </div>
+  </div>
+  <p class="help-text">فرمول: نمره خالص = درست − (غلط ÷ ۳) | نمره منفی هر غلط: ۱/۳</p>
+</div>
+
+<!-- ═══════════════════ EXAM ═══════════════════ -->
+<div id="sec-exam" class="hidden">
+
+  <!-- SETUP -->
+  <div id="exam-setup">
+    <div class="card">
+      <div class="card-title">۱. حالت آزمون را انتخاب کن</div>
+      <div class="exam-mode-grid">
+        <div class="exam-mode-card sel" id="em-125" onclick="pickMode(125)">
+          <div class="emc-icon">📚</div><div class="emc-num">۱۲۵</div>
+          <div class="emc-desc">سؤال — ۱۲۵ دقیقه</div><div class="emc-sub">هر دو دفترچه</div>
+        </div>
+        <div class="exam-mode-card" id="em-75" onclick="pickMode(75)">
+          <div class="emc-icon">📖</div><div class="emc-num">۷۵</div>
+          <div class="emc-desc">سؤال — ۷۵ دقیقه</div><div class="emc-sub">دفترچه ۱</div>
+        </div>
+        <div class="exam-mode-card" id="em-50" onclick="pickMode(50)">
+          <div class="emc-icon">🧩</div><div class="emc-num">۵۰</div>
+          <div class="emc-desc">سؤال — ۵۰ دقیقه</div><div class="emc-sub">دفترچه ۲</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">۲. پاسخنامه <span class="badge-soft">اختیاری — برای تصحیح خودکار</span></div>
+      <div class="key-tabs">
+        <button class="key-tab active" id="kt-text"   onclick="setKeyTab('text')">✏️ متن / کد</button>
+        <button class="key-tab"        id="kt-manual" onclick="setKeyTab('manual')">🖊️ دستی</button>
+        <button class="key-tab"        id="kt-pdf"    onclick="setKeyTab('pdf')">📄 PDF</button>
+      </div>
+
+      <div id="kp-text">
+        <p style="font-size:11px;color:var(--t2);margin-bottom:8px">
+          هر سطر یک جواب مثل <code style="background:var(--primary-l);color:var(--primary);padding:1px 5px;border-radius:3px;font-size:11px">1 الف</code> یا
+          لیست پیاپی: <code style="background:var(--primary-l);color:var(--primary);padding:1px 5px;border-radius:3px;font-size:11px">الف ب ج الف ب ...</code>
+        </p>
+        <textarea class="key-textarea" id="key-text" placeholder="مثال:&#10;1 الف&#10;2 ب&#10;3 ج&#10;4 الف&#10;...&#10;یا: الف ب ج الف ب ج ب الف ..."></textarea>
+        <button class="key-parse-btn" onclick="parseTextKey()">تجزیه و ذخیره ✓</button>
+        <div class="key-status" id="ks-text"></div>
+      </div>
+
+      <div id="kp-manual" class="hidden">
+        <p style="font-size:11px;color:var(--t2);margin-bottom:10px">برای هر سؤال روی گزینه‌ی درست کلیک کنید:</p>
+        <div class="key-manual-scroll"><div class="key-manual-inner" id="km-grid"></div></div>
+      </div>
+
+      <div id="kp-pdf" class="hidden">
+        <p style="font-size:11px;color:var(--t2);margin-bottom:8px">PDF پاسخنامه را آپلود کن — متن استخراج و تجزیه می‌شود:</p>
+        <div class="pdf-dz">
+          <div class="pdf-dz-icon">📂</div>
+          <p>کلیک کن یا PDF را اینجا بکش</p>
+          <p style="font-size:10px;color:var(--t3);margin-top:3px">فقط .pdf</p>
+          <input type="file" accept=".pdf" onchange="handlePDF(event)">
+        </div>
+        <div class="key-status" id="ks-pdf"></div>
+      </div>
+
+      <div id="key-preview" class="key-preview-wrap hidden">
+        <div class="kp-header">
+          <span class="kp-label" id="kp-lbl">✓ پاسخنامه ذخیره شد</span>
+          <button class="kp-clear" onclick="clearKey()">پاک کردن</button>
+        </div>
+        <div class="kp-badges" id="kp-badges"></div>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startExam()">شروع آزمون ←</button>
+  </div>
+
+  <!-- RUNNING -->
+  <div id="exam-running" class="hidden">
+    <div class="exam-header">
+      <div class="eh-timer-wrap">
+        <span class="eh-timer-lbl">باقی‌مانده</span>
+        <span class="eh-timer" id="eh-timer">00:00</span>
+      </div>
+      <div class="eh-prog">
+        <div class="eh-prog-text" id="eh-prog-txt">۰ از ۰ پاسخ داده</div>
+        <div class="eh-pbar"><div class="eh-pbar-fill" id="eh-pbar" style="width:0%"></div></div>
+      </div>
+      <button class="btn-end-exam" onclick="confirmEnd()">پایان آزمون ✕</button>
+    </div>
+
+    <div class="sheet-filters">
+      <button class="sf-btn active" id="sf-all"      onclick="filterSheet('all')">همه <span class="sf-count" id="sfc-all">0</span></button>
+      <button class="sf-btn"        id="sf-blank"    onclick="filterSheet('blank')">⬜ نزده <span class="sf-count" id="sfc-blank">0</span></button>
+      <button class="sf-btn"        id="sf-marked"   onclick="filterSheet('marked')">⚑ علامت <span class="sf-count" id="sfc-marked">0</span></button>
+      <button class="sf-btn"        id="sf-answered" onclick="filterSheet('answered')">✅ پاسخ داده <span class="sf-count" id="sfc-answered">0</span></button>
+    </div>
+
+    <div id="answer-sheet"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="exam-results" class="hidden">
+    <div class="er-hero">
+      <div class="erh-label">نتیجه نهایی آزمون</div>
+      <div class="erh-score" id="erh-score">—</div>
+      <div class="erh-sub" id="erh-sub">درصد نهایی</div>
+      <div class="erh-btns">
+        <button class="btn-ghost" onclick="resetExam()">آزمون جدید</button>
+        <button class="btn-ghost" id="btn-send-calc" onclick="sendToCalc()">ارسال به محاسبه‌گر</button>
+      </div>
+    </div>
+    <div class="score-cards" id="er-cards"></div>
+    <div id="er-subj-block"></div>
+    <div class="card"><div class="card-title">تحلیل عملکرد</div><ul class="insight-list" id="er-insights"></ul></div>
+    <div class="card">
+      <div class="card-title">مرور پاسخ‌برگ تصحیح‌شده</div>
+      <div class="rs-filters">
+        <button class="rs-btn active" id="rs-all"     onclick="filterRS('all')">همه</button>
+        <button class="rs-btn"        id="rs-wrong"   onclick="filterRS('wrong')">❌ غلط</button>
+        <button class="rs-btn"        id="rs-blank"   onclick="filterRS('blank')">⬜ نزده</button>
+        <button class="rs-btn"        id="rs-correct" onclick="filterRS('correct')">✅ درست</button>
+      </div>
+      <div id="result-sheet"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ HISTORY ═══════════════════ -->
+<div id="sec-hist" class="hidden">
+  <div id="hist-list-wrap">
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <div class="card-title" style="margin:0">سابقه آزمون‌های قبلی</div>
+      <button class="btn-soft danger" onclick="clearAllHistory()">حذف همه</button>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+  <div id="hist-detail" class="hidden"></div>
+</div>
+
+<!-- CONFIRM -->
+
+<div class="overlay hidden" id="confirm-overlay">
+  <div class="dlg">
+    <h3>پایان آزمون؟</h3>
+    <p id="dlg-msg">آیا می‌خواهی آزمون را تمام کنی؟</p>
+    <div class="dlg-btns">
+      <button class="dlg-yes" onclick="doConfirm(true)">بله، پایان</button>
+      <button class="dlg-no"  onclick="doConfirm(false)">ادامه</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer style="margin-top:40px;padding:22px 16px;text-align:center;border-top:1px solid var(--border);background:var(--surface);font-family:'Vazirmatn',sans-serif">
+  <div style="font-size:15px;font-weight:800;color:var(--primary);margin-bottom:5px">سوپر سرویس آزمون تیزهوشان</div>
+  <div style="font-size:14px;color:var(--primary-d);margin-bottom:8px">طراحی و توسعه توسط آتیلا کاووسی</div>
+  <div style="font-size:12px;color:var(--t2);direction:ltr">Telegram: @atilakavoosi</div>
+  <div style="margin-top:10px;font-size:10px;color:var(--t3)">© 2026 All Rights Reserved</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+'use strict';
+
+/* ══ CONFIG ══ */
+const SUBJECTS=[
+  {id:'quran',  name:'قرآن و معارف اسلامی',total:10,coeff:2},
+  {id:'farsi',  name:'فارسی',               total:15,coeff:2},
+  {id:'social', name:'مطالعات اجتماعی',     total:10,coeff:2},
+  {id:'arabic', name:'عربی',                total:10,coeff:1},
+  {id:'science',name:'علوم',                total:15,coeff:3},
+  {id:'math',   name:'ریاضی',               total:15,coeff:3},
+];
+const B2_TOTAL=50;
+const B1_WSUM=SUBJECTS.reduce((a,s)=>a+s.total*s.coeff,0); // 170
+const BK_W={b1:0.5,b2:0.5};
+
+const EXAM_CFG={
+  125:{label:'۱۲۵ سؤال',dur:125*60,subjs:[
+    {id:'quran',   name:'قرآن و معارف',    bk:'b1',from:1,  to:10,  coeff:2},
+    {id:'farsi',   name:'فارسی',           bk:'b1',from:11, to:25,  coeff:2},
+    {id:'social',  name:'مطالعات اجتماعی',bk:'b1',from:26, to:35,  coeff:2},
+    {id:'arabic',  name:'عربی',            bk:'b1',from:36, to:45,  coeff:1},
+    {id:'science', name:'علوم',            bk:'b1',from:46, to:60,  coeff:3},
+    {id:'math',    name:'ریاضی',           bk:'b1',from:61, to:75,  coeff:3},
+    {id:'aptitude',name:'استعداد تحلیلی', bk:'b2',from:76, to:125, coeff:1},
+  ]},
+  75:{label:'۷۵ سؤال',dur:75*60,subjs:[
+    {id:'quran',   name:'قرآن و معارف',    bk:'b1',from:1,  to:10, coeff:2},
+    {id:'farsi',   name:'فارسی',           bk:'b1',from:11, to:25, coeff:2},
+    {id:'social',  name:'مطالعات اجتماعی',bk:'b1',from:26, to:35, coeff:2},
+    {id:'arabic',  name:'عربی',            bk:'b1',from:36, to:45, coeff:1},
+    {id:'science', name:'علوم',            bk:'b1',from:46, to:60, coeff:3},
+    {id:'math',    name:'ریاضی',           bk:'b1',from:61, to:75, coeff:3},
+  ]},
+  50:{label:'۵۰ سؤال',dur:50*60,subjs:[
+    {id:'aptitude',name:'استعداد تحلیلی', bk:'b2',from:1,to:50,coeff:1},
+  ]},
+};
+const OPTS=['الف','ب','ج','د'];
+
+/* ══ CALC STATE ══ */
+let calcMode='both';
+let calcResult=null;
+
+/* ══ EXAM STATE ══ */
+let ES={
+  mode:125,phase:'setup',
+  questions:[],     // [{num,sid,bk,answer:null,marked:false}]
+  key:{},           // {1:'الف',...}
+  hasKey:false,
+  manKey:{},
+  keyTab:'text',
+  elapsed:0,dur:0,
+  timerId:null,
+  sheetF:'all',resultF:'all',
+  results:null,
+};
+let _confirmCb=null;
+
+/* ══ STORAGE ══ */
+const LS_KEYS='tizExam_keys_v2';
+const LS_PROGRESS='tizExam_progress_v2';
+const LS_HISTORY='tizExam_history_v2';
+function lsGet(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch{return def;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function lsDel(k){try{localStorage.removeItem(k);}catch{}}
+
+function saveKeyStorage(){
+  const all=lsGet(LS_KEYS,{});
+  all[ES.mode]={key:ES.key,manKey:ES.manKey,hasKey:ES.hasKey,textVal:document.getElementById('key-text')?.value||''};
+  lsSet(LS_KEYS,all);
+}
+function loadKeyStorage(){
+  const all=lsGet(LS_KEYS,{});
+  const saved=all[ES.mode];
+  if(!saved)return;
+  ES.key=saved.key||{};
+  ES.manKey=saved.manKey||{};
+  ES.hasKey=!!saved.hasKey&&Object.keys(ES.key).length>0;
+  const ta=document.getElementById('key-text');
+  if(ta&&saved.textVal)ta.value=saved.textVal;
+  updateKeyPreview();
+}
+function saveProgress(){
+  if(ES.phase!=='running')return;
+  lsSet(LS_PROGRESS,{mode:ES.mode,questions:ES.questions,elapsed:ES.elapsed,dur:ES.dur,key:ES.key,hasKey:ES.hasKey,savedAt:Date.now()});
+}
+function showConfirmDialog(title,msg,onYes){
+  document.querySelector('#confirm-overlay .dlg h3').textContent=title;
+  document.getElementById('dlg-msg').textContent=msg;
+  document.getElementById('confirm-overlay').classList.remove('hidden');
+  _confirmCb=yes=>{if(yes)onYes();};
+}
+
+/* ══ INIT ══ */
+function init(){
+  buildCalcInputs();
+  setMode('both');
+  document.getElementById('b2-c').addEventListener('input',syncB2);
+  document.getElementById('b2-w').addEventListener('input',syncB2);
+  document.getElementById('b2-b').addEventListener('input',validateB2);
+  document.getElementById('key-text').addEventListener('input',()=>{
+    const all=lsGet(LS_KEYS,{});
+    all[ES.mode]=all[ES.mode]||{key:{},manKey:{},hasKey:false};
+    all[ES.mode].textVal=document.getElementById('key-text').value;
+    lsSet(LS_KEYS,all);
+  });
+  loadKeyStorage();
+  checkResumeProgress();
+}
+
+/* ══════════════════════════════════════════════════════
+   CALCULATOR — PRESERVED LOGIC
+══════════════════════════════════════════════════════ */
+function buildCalcInputs(){
+  document.getElementById('subj-grid').innerHTML=SUBJECTS.map(s=>`
+    <div class="subj-row">
+      <div class="subj-header">
+        <span class="subj-name">${s.name}</span>
+        <div class="subj-meta"><span class="meta-q">${s.total} سؤال</span><span class="meta-c">ضریب ${s.coeff}</span></div>
+      </div>
+      <div class="inp-row">
+        <div class="inp-group"><label>✅ درست</label><input type="number" id="${s.id}-c" min="0" max="${s.total}" placeholder="0" oninput="syncBlank('${s.id}')"></div>
+        <div class="inp-group"><label>❌ غلط</label><input type="number" id="${s.id}-w" min="0" max="${s.total}" placeholder="0" oninput="syncBlank('${s.id}')"></div>
+        <div class="inp-group"><label>⬜ نزده</label><input type="number" id="${s.id}-b" min="0" max="${s.total}" placeholder="خودکار" oninput="validateSubj('${s.id}')"></div>
+      </div>
+      <div id="${s.id}-sum" class="sum-ind">مجموع: ۰ از ${s.total}</div>
+      <div id="${s.id}-err" class="inp-error"></div>
+    </div>`).join('');
+}
+
+function setMode(m){
+  calcMode=m;
+  document.querySelectorAll('#sec-calc .calc-tab').forEach((t,i)=>t.classList.toggle('active',['both','b1','b2'][i]===m));
+  document.getElementById('b1-sec').classList.toggle('hidden',m==='b2');
+  document.getElementById('b2-sec').classList.toggle('hidden',m==='b1');
+  document.getElementById('results-sec').classList.add('hidden');
+}
+
+function ri(id){
+  const v=document.getElementById(id)?.value.trim();
+  if(!v)return null;
+  if(!/^[-+]?\d+$/.test(v))return NaN;
+  return Number(v);
+}
+
+function syncBlank(sid){
+  const s=SUBJECTS.find(x=>x.id===sid);
+  const c=ri(`${sid}-c`),w=ri(`${sid}-w`);
+  if(Number.isInteger(c)&&Number.isInteger(w)&&c>=0&&w>=0){
+    const d=s.total-c-w;
+    if(d>=0)document.getElementById(`${sid}-b`).value=d;
+  }
+  validateSubj(sid);
+}
+
+function syncB2(){
+  const c=ri('b2-c'),w=ri('b2-w');
+  if(Number.isInteger(c)&&Number.isInteger(w)&&c>=0&&w>=0){
+    const d=B2_TOTAL-c-w;
+    if(d>=0)document.getElementById('b2-b').value=d;
+  }
+  validateB2();
+}
+
+function normCounts(total,cId,wId,bId){
+  const c=ri(cId),w=ri(wId),bRaw=ri(bId);
+  if([c,w].some(v=>Number.isNaN(v))||(bRaw!==null&&Number.isNaN(bRaw)))return{ok:false,e:'فقط عدد صحیح وارد کن.'};
+  if([c,w,bRaw].some(v=>v!==null&&v<0))return{ok:false,e:'عدد منفی مجاز نیست.'};
+  if(c===null||w===null)return{ok:false,e:'درست و غلط را وارد کن.'};
+  const b=bRaw!==null?bRaw:total-c-w;
+  if(c+w+b!==total)return{ok:false,e:`جمع باید ${total} باشد. الان ${c+w+b} است.`};
+  return{ok:true,v:{c,w,b}};
+}
+
+function validateSubj(sid){
+  const s=SUBJECTS.find(x=>x.id===sid);
+  const res=normCounts(s.total,`${sid}-c`,`${sid}-w`,`${sid}-b`);
+  const sum=document.getElementById(`${sid}-sum`),err=document.getElementById(`${sid}-err`);
+  if(!res.ok){sum.textContent=`نامعتبر از ${s.total}`;sum.className='sum-ind err';err.textContent=res.e;return false;}
+  const{c,w,b}=res.v;
+  sum.textContent=`مجموع: ${c+w+b} از ${s.total}`;sum.className='sum-ind ok';err.textContent='';
+  return true;
+}
+
+function validateB2(){
+  const res=normCounts(B2_TOTAL,'b2-c','b2-w','b2-b');
+  const sum=document.getElementById('b2-sum'),err=document.getElementById('b2-err');
+  if(!res.ok){sum.textContent=`نامعتبر از ${B2_TOTAL}`;sum.className='sum-ind err';err.textContent=res.e;return false;}
+  const{c,w,b}=res.v;
+  sum.textContent=`مجموع: ${c+w+b} از ${B2_TOTAL}`;sum.className='sum-ind ok';err.textContent='';
+  return true;
+}
+
+function checkValid(){
+  let ok=true;
+  if(calcMode!=='b2')SUBJECTS.forEach(s=>{if(!validateSubj(s.id))ok=false;});
+  if(calcMode!=='b1')if(!validateB2())ok=false;
+  return ok;
+}
+
+const r2=n=>Math.round((n+Number.EPSILON)*100)/100;
+
+function calcSubj(s,c,w,b){
+  const net=c-w/3;
+  return{...s,c,w,b,net:r2(net),pct:r2((net/s.total)*100),wt:r2(net*s.coeff),negLoss:r2(w/3)};
+}
+
+function b1PctFn(rows){return r2((rows.reduce((a,r)=>a+r.wt,0)/B1_WSUM)*100);}
+function b2PctFn(net){return r2((net/B2_TOTAL)*100);}
+function combPct(p1,p2){
+  if(p1==null&&p2==null)return 0;
+  if(p1==null)return p2;
+  if(p2==null)return p1;
+  return r2(p1*BK_W.b1+p2*BK_W.b2);
+}
+
+function calculate(){
+  if(!checkValid()){alert('لطفاً ورودی‌های اشتباه را اصلاح کن.');return;}
+  let b1R=null,b2R=null;
+  if(calcMode!=='b2'){
+    const rows=SUBJECTS.map(s=>calcSubj(s,+document.getElementById(`${s.id}-c`).value||0,+document.getElementById(`${s.id}-w`).value||0,+document.getElementById(`${s.id}-b`).value||0));
+    b1R={rows,totalWt:r2(rows.reduce((a,r)=>a+r.wt,0)),totalC:rows.reduce((a,r)=>a+r.c,0),totalW:rows.reduce((a,r)=>a+r.w,0),totalB:rows.reduce((a,r)=>a+r.b,0),finalPct:b1PctFn(rows)};
+  }
+  if(calcMode!=='b1'){
+    const c=+document.getElementById('b2-c').value||0,w=+document.getElementById('b2-w').value||0,b=+document.getElementById('b2-b').value||0;
+    const row=calcSubj({id:'aptitude',name:'استعداد تحلیلی',total:B2_TOTAL,coeff:1},c,w,b);
+    b2R={row,c,w,b,net:row.net,finalPct:b2PctFn(row.net)};
+  }
+  calcResult={b1R,b2R,mode:calcMode};
+  renderCalcResults();
+}
+
+function renderCalcResults(){
+  const{b1R,b2R}=calcResult;
+  const sec=document.getElementById('results-sec');
+  sec.classList.remove('hidden');
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+  const cards=[];
+  if(b1R){
+    cards.push({lbl:'درصد دفترچه ۱',val:`${b1R.finalPct.toFixed(2)}%`,sub:'استعداد تحصیلی',hl:true});
+    cards.push({lbl:'امتیاز وزنی',val:b1R.totalWt.toFixed(2),sub:`از ${B1_WSUM}`});
+    cards.push({lbl:'درست',val:b1R.totalC,sub:'سؤال'});
+    cards.push({lbl:'اثر منفی',val:`−${r2(b1R.totalW/3).toFixed(2)}`,sub:`${b1R.totalW} غلط`});
+  }
+  if(b2R){
+    cards.push({lbl:'درصد دفترچه ۲',val:`${b2R.finalPct.toFixed(2)}%`,sub:'استعداد تحلیلی',hl:!b1R});
+    cards.push({lbl:'نمره خالص ۲',val:b2R.net.toFixed(2),sub:'از ۵۰'});
+  }
+  if(b1R&&b2R){
+    const cp=combPct(b1R.finalPct,b2R.finalPct);
+    cards.push({lbl:'درصد کل آزمون',val:`${cp.toFixed(2)}%`,sub:'50/50',hl:true});
+    cards.push({lbl:'تراز برآوردی',val:Math.round(cp*1000).toLocaleString('fa-IR'),sub:'برآوردی'});
+  }
+  document.getElementById('calc-cards').innerHTML=cards.map(c=>`<div class="score-card${c.hl?' hl':''}"><div class="sc-label">${c.lbl}</div><div class="sc-value">${c.val}</div><div class="sc-sub">${c.sub||''}</div></div>`).join('');
+  const b1Block=document.getElementById('b1-res-block');
+  if(b1R){
+    b1Block.classList.remove('hidden');
+    document.getElementById('b1-tbody').innerHTML=b1R.rows.map(row=>{
+      const cls=row.pct>=60?'good':row.pct>=30?'mid':'bad';
+      const bw=Math.max(0,Math.min(100,row.pct));
+      return`<tr><td>${row.name}</td><td>${row.c}</td><td>${row.w}</td><td>${row.b}</td><td><b>${row.coeff}</b></td><td>${row.net.toFixed(2)}</td><td><div class="pct-bar"><div class="pct-fill" style="width:${bw}%;max-width:55px"></div><span class="pct-val ${cls}">${row.pct.toFixed(1)}%</span></div></td><td>${row.wt.toFixed(2)}</td></tr>`;
+    }).join('');
+    document.getElementById('b1-formula').innerHTML=`<b>فرمول:</b> نمره خالص = <code>درست − (غلط÷۳)</code> | امتیاز وزنی = <code>نمره×ضریب</code> | درصد = <code>${b1R.totalWt.toFixed(2)}÷${B1_WSUM}×۱۰۰ = ${b1R.finalPct.toFixed(2)}%</code>`;
+  }else b1Block.classList.add('hidden');
+  const b2Block=document.getElementById('b2-res-block');
+  if(b2R){
+    b2Block.classList.remove('hidden');
+    document.getElementById('b2-detail').innerHTML=`<div class="score-cards" style="margin:0"><div class="score-card"><div class="sc-label">درست</div><div class="sc-value">${b2R.c}</div></div><div class="score-card"><div class="sc-label">غلط</div><div class="sc-value">${b2R.w}</div></div><div class="score-card"><div class="sc-label">نزده</div><div class="sc-value">${b2R.b}</div></div><div class="score-card hl"><div class="sc-label">درصد</div><div class="sc-value">${b2R.finalPct.toFixed(2)}%</div></div></div>`;
+  }else b2Block.classList.add('hidden');
+  buildCalcInsights();
+  if(b1R){const sl=document.getElementById('sim-slider');sl.max=b1R.totalW;sl.value=b1R.totalW;updateSim();}
+  document.getElementById('sim-card').classList.toggle('hidden',!b1R);
+  calcTarz();
+}
+
+function buildCalcInsights(){
+  const{b1R,b2R}=calcResult;const items=[];
+  if(b1R){
+    const best=[...b1R.rows].sort((a,b)=>b.pct-a.pct)[0];
+    items.push({cls:'good',title:`نقطه قوت: ${best.name}`,text:`${best.pct.toFixed(1)}% — حفظ کن.`});
+    const wk=b1R.rows.filter(r=>r.coeff>=2).sort((a,b)=>a.pct-b.pct)[0];
+    if(wk&&wk.pct<50)items.push({cls:'bad',title:`هشدار: ${wk.name} (ضریب ${wk.coeff})`,text:`${wk.pct.toFixed(1)}% — تأثیر مستقیم بر نتیجه.`});
+    b1R.rows.forEach(r=>{
+      if(r.w>=5)items.push({cls:'warn',title:`نمره منفی: ${r.name}`,text:`${r.w} غلط = −${r.negLoss.toFixed(2)} نمره.`});
+      if(r.b>=6)items.push({cls:'info',title:`نزده زیاد: ${r.name}`,text:`${r.b} سؤال — مدیریت زمان؟`});
+    });
+    if(b1R.finalPct>=70)items.push({cls:'good',title:'عملکرد عالی',text:`${b1R.finalPct.toFixed(1)}% — فوق‌العاده!`});
+    else if(b1R.finalPct>=50)items.push({cls:'info',title:'عملکرد متوسط',text:`${b1R.finalPct.toFixed(1)}% — ضریب‌بالاها نیاز دارند.`});
+    else items.push({cls:'bad',title:'نیاز به کار بیشتر',text:`${b1R.finalPct.toFixed(1)}% — پایه‌ها را تقویت کن.`});
+  }
+  if(b2R){
+    if(b2R.finalPct>=60)items.push({cls:'good',title:'دفترچه ۲: خوب',text:`${b2R.finalPct.toFixed(1)}%`});
+    else if(b2R.finalPct<30)items.push({cls:'warn',title:'دفترچه ۲: نیاز به تقویت',text:`${b2R.finalPct.toFixed(1)}%`});
+    else items.push({cls:'info',title:'دفترچه ۲: قابل‌قبول',text:`${b2R.finalPct.toFixed(1)}%`});
+  }
+  document.getElementById('calc-insights').innerHTML=items.slice(0,8).map(it=>`<li class="insight-item ${it.cls}"><span class="insight-title">${it.title}</span>${it.text}</li>`).join('');
+}
+
+function updateSim(){
+  if(!calcResult?.b1R)return;
+  const{b1R}=calcResult;
+  const red=parseInt(document.getElementById('sim-slider').value,10);
+  const tw=Math.max(0,b1R.totalW-red);
+  const ratio=b1R.totalW>0?tw/b1R.totalW:0;
+  let sw=0;
+  b1R.rows.forEach(r=>{sw+=(r.c-(r.w*ratio/3))*r.coeff;});
+  const sp=(sw/B1_WSUM)*100,diff=sp-b1R.finalPct;
+  document.getElementById('sim-lbl').textContent=`${tw} غلط`;
+  document.getElementById('sim-res').innerHTML=`درصد جدید: <b style="color:var(--primary);font-size:15px">${sp.toFixed(2)}%</b> &nbsp; تغییر: <b style="color:${diff>=0?'var(--good)':'var(--bad)'}">${diff>=0?'+':''}${diff.toFixed(2)}%</b>`;
+}
+
+function toggleTarz(){
+  const on=document.getElementById('tarz-custom').checked;
+  document.getElementById('tarz-inp-wrap').classList.toggle('hidden',!on);
+  calcTarz();
+}
+
+function calcTarz(){
+  if(!calcResult)return;
+  const{b1R,b2R}=calcResult;
+  const pct=(b1R&&b2R)?combPct(b1R.finalPct,b2R.finalPct):b1R?b1R.finalPct:b2R?b2R.finalPct:null;
+  if(pct==null)return;
+  const custom=document.getElementById('tarz-custom').checked;
+  const out=document.getElementById('tarz-res');
+  if(custom){
+    const M=parseFloat(document.getElementById('tarz-m').value),SD=parseFloat(document.getElementById('tarz-sd').value);
+    if(!isFinite(M)||!isFinite(SD)||SD<=0){out.innerHTML='<p style="font-size:12px;color:var(--t3);margin-top:8px">میانگین و SD معتبر وارد کن.</p>';return;}
+    const T=Math.round(1000*((pct-M)/SD)+5000);
+    out.innerHTML=`<div class="tarz-result-card"><div class="trc-label">تراز آماری</div><div class="trc-val">${T.toLocaleString('fa-IR')}</div><div class="trc-note">M=${M} | SD=${SD} | فرمول: T=1000×((X−M)÷SD)+5000</div></div>`;
+  }else{
+    const T=Math.round(pct*1000);
+    out.innerHTML=`<div class="tarz-result-card"><div class="trc-label">تراز/نمره برآوردی</div><div class="trc-val">${T.toLocaleString('fa-IR')}</div><div class="trc-note">درصد ${pct.toFixed(2)}% × ۱۰۰۰</div></div><div class="tarz-est-note">⚠️ این مقدار برآوردی است. تراز رسمی به داده‌های آماری همان آزمون نیاز دارد.</div>`;
+  }
+}
+
+function resetAll(){
+  SUBJECTS.forEach(s=>{
+    ['c','w','b'].forEach(f=>{const el=document.getElementById(`${s.id}-${f}`);if(el)el.value='';});
+    const sum=document.getElementById(`${s.id}-sum`);if(sum){sum.textContent=`مجموع: ۰ از ${s.total}`;sum.className='sum-ind';}
+    const err=document.getElementById(`${s.id}-err`);if(err)err.textContent='';
+  });
+  ['b2-c','b2-w','b2-b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const b2s=document.getElementById('b2-sum');if(b2s){b2s.textContent='مجموع: ۰ از ۵۰';b2s.className='sum-ind';}
+  const b2e=document.getElementById('b2-err');if(b2e)b2e.textContent='';
+  document.getElementById('results-sec').classList.add('hidden');
+  document.getElementById('tarz-custom').checked=false;
+  document.getElementById('tarz-inp-wrap').classList.add('hidden');
+  document.getElementById('tarz-res').innerHTML='';
+  calcResult=null;
+}
+
+/* ══════════════════════════════════════════════════════
+   APP NAV
+══════════════════════════════════════════════════════ */
+function setAppTab(t){
+  ['calc','exam','hist'].forEach(k=>{
+    document.getElementById(`sec-${k}`).classList.toggle('hidden',k!==t);
+    document.getElementById(`atab-${k}`).classList.toggle('active',k===t);
+  });
+  if(t==='hist'){
+    document.getElementById('hist-detail').classList.add('hidden');
+    document.getElementById('hist-list-wrap').classList.remove('hidden');
+    renderHistList();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   EXAM MODE
+══════════════════════════════════════════════════════ */
+function pickMode(m){
+  ES.mode=m;
+  [125,75,50].forEach(x=>document.getElementById(`em-${x}`).classList.toggle('sel',x===m));
+  resetKeyUIState();
+  loadKeyStorage();
+  if(ES.keyTab==='manual')buildManualGrid();
+}
+
+/* ══════════════════════════════════════════════════════
+   ANSWER KEY ENGINE
+══════════════════════════════════════════════════════ */
+function setKeyTab(tab){
+  ES.keyTab=tab;
+  ['text','manual','pdf'].forEach(t=>{
+    document.getElementById(`kt-${t}`).classList.toggle('active',t===tab);
+    document.getElementById(`kp-${t}`).classList.toggle('hidden',t!==tab);
+  });
+  if(tab==='manual')buildManualGrid();
+}
+
+function buildManualGrid(){
+  const total=ES.mode;
+  let html='';
+  for(let q=1;q<=total;q++){
+    const cur=ES.manKey[q]||null;
+    const miss=!cur&&ES.missingQs&&ES.missingQs.has(q);
+    const conf=ES.conflictQs&&ES.conflictQs.has(q);
+    let rowCls='km-row';
+    if(conf)rowCls+=' km-conflict';else if(miss)rowCls+=' km-missing';
+    html+=`<div class="${rowCls}" id="km-row-${q}"><span class="km-num">${q}</span>${OPTS.map(o=>`<button class="km-btn${cur===o?' active':''}" onclick="setManKey(${q},'${o}',this)">${o}</button>`).join('')}</div>`;
+  }
+  document.getElementById('km-grid').innerHTML=html;
+}
+
+function setManKey(qNum,opt,btn){
+  if(ES.manKey[qNum]===opt)delete ES.manKey[qNum];
+  else ES.manKey[qNum]=opt;
+  btn.closest('.km-row').querySelectorAll('.km-btn').forEach(b=>b.classList.remove('active'));
+  if(ES.manKey[qNum])btn.classList.add('active');
+  ES.key={...ES.manKey};
+  ES.hasKey=Object.keys(ES.key).length>0;
+  if(ES.missingQs)ES.missingQs.delete(qNum);
+  if(ES.conflictQs)ES.conflictQs.delete(qNum);
+  const row=document.getElementById(`km-row-${qNum}`);
+  if(row)row.classList.remove('km-missing','km-conflict');
+  updateKeyPreview();
+  saveKeyStorage();
+}
+
+function parseTextKey(){
+  const raw=document.getElementById('key-text').value.trim();
+  if(!raw){showKS('text','متنی وارد نشده.','err');return;}
+  const res=smartParse(raw,ES.mode);
+  if(res.err){showKS('text',res.err,'err');return;}
+  ES.key=res.key;ES.manKey={...res.key};ES.hasKey=true;
+  ES.missingQs=null;ES.conflictQs=null;
+  updateKeyPreview();
+  saveKeyStorage();
+  if(ES.keyTab==='manual')buildManualGrid();
+  showKS('text',`✓ ${Object.keys(res.key).length} پاسخ ذخیره شد.`,'ok');
+}
+
+function smartParse(raw,total){
+  /* Delegate to the same production engine used by the PDF pipeline */
+  const lines=raw.split(/\r?\n/).filter(Boolean);
+  const res=parseAnswerLines(lines,total);
+  if(res.detected>0)return{key:res.key};
+  return{err:'نتوانستم تجزیه کنم. فرمت‌های قبول: «1 الف»، «1. ب»، «-1 گزینه »2««، یا لیست پیاپی «الف ب ج»'};
+}
+
+function showKS(panel,msg,cls){
+  const el=document.getElementById(`ks-${panel}`);
+  if(!el)return;
+  el.textContent=msg;
+  el.className=`key-status ${cls}`;
+}
+
+function updateKeyPreview(){
+  const count=Object.keys(ES.key).length;
+  const wrap=document.getElementById('key-preview');
+  if(!count){wrap.classList.add('hidden');return;}
+  wrap.classList.remove('hidden');
+  document.getElementById('kp-lbl').textContent=`✓ ${count} پاسخ ذخیره شد`;
+  const sorted=Object.keys(ES.key).sort((a,b)=>+a-+b);
+  document.getElementById('kp-badges').innerHTML=sorted.map(q=>`<span class="kp-badge">${q}: ${ES.key[q]}</span>`).join('');
+}
+
+function resetKeyUIState(){
+  ES.key={};ES.manKey={};ES.hasKey=false;ES.missingQs=null;ES.conflictQs=null;
+  const ta=document.getElementById('key-text');if(ta)ta.value='';
+  document.getElementById('key-preview').classList.add('hidden');
+  showKS('text','','');showKS('pdf','','');
+}
+function clearKey(){
+  resetKeyUIState();
+  const all=lsGet(LS_KEYS,{});delete all[ES.mode];lsSet(LS_KEYS,all);
+  if(ES.keyTab==='manual')buildManualGrid();
+}
+
+/* ══════════════════════════════════════════════════════
+   PDF EXTRACTION ENGINE — PRODUCTION GRADE
+   Root cause of previous failure:
+   1. LTR sort reversed RTL line text: »2« گزینۀ -1 instead of -1 گزینۀ »2«
+   2. No pattern matched "-N گزینۀ »D«" format
+   Fix: triple-strategy (raw / RTL / LTR), pattern D added as top priority
+══════════════════════════════════════════════════════ */
+async function handlePDF(e){
+  const file=e.target.files?.[0];if(!file)return;
+  showKS('pdf','در حال استخراج...','warn');
+  try{
+    if(typeof pdfjsLib==='undefined')throw new Error('PDF.js بارگذاری نشد — اتصال اینترنت را بررسی کن.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const ab=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+    const allItems=[];
+    const rawLineTexts=[];
+    for(let p=1;p<=pdf.numPages;p++){
+      const page=await pdf.getPage(p);
+      const content=await page.getTextContent();
+      const items=content.items.filter(it=>it.str&&it.str.trim()!=='');
+      /* STRATEGY A: raw logical order (PDF.js returns text in logical Unicode
+         order for properly tagged text-PDFs — this is the most reliable for
+         Persian documents because the bidi algorithm is already applied) */
+      let rawText='',prevY=null;
+      items.forEach(it=>{
+        const y=it.transform[5];
+        if(prevY!==null&&Math.abs(y-prevY)>4)rawText+='\n';
+        rawText+=it.str;
+        prevY=y;
+      });
+      rawLineTexts.push(...rawText.split('\n'));
+      /* Collect positioned items for strategies B & C */
+      items.forEach(it=>allItems.push({
+        str:it.str,
+        x:it.transform[4],
+        y:it.transform[5],
+        w:Math.abs(it.width||0),
+        h:Math.abs(it.transform[3])||Math.abs(it.transform[0])||10
+      }));
+    }
+    if(!allItems.length&&!rawLineTexts.length)
+      throw new Error('متنی از PDF استخراج نشد (احتمالاً اسکن تصویری است).');
+    /* STRATEGY B: positional RTL (right-to-left) — correct for Persian pages */
+    const linesRTL=buildPositionalLines(allItems,'rtl');
+    /* STRATEGY C: positional LTR — fallback for mixed documents */
+    const linesLTR=buildPositionalLines(allItems,'ltr');
+    /* Try all three; pick the one with the most detected answers */
+    const candidates=[
+      parseAnswerLines(rawLineTexts,ES.mode),
+      parseAnswerLines(linesRTL,   ES.mode),
+      parseAnswerLines(linesLTR,   ES.mode),
+    ];
+    const best=candidates.reduce((a,b)=>b.detected>a.detected?b:a);
+    if(best.detected===0)
+      throw new Error('هیچ پاسخی یافت نشد. فرمت PDF شناخته‌شده نیست. از تب «متن» یا «دستی» استفاده کن.');
+    applyPdfResult(best);
+  }catch(err){
+    showKS('pdf',`خطا: ${err.message}`,'err');
+  }
+  e.target.value='';
+}
+
+/* Cluster items into lines; sort within line by direction */
+function buildPositionalLines(items,dir){
+  if(!items.length)return[];
+  const avgH=items.reduce((a,i)=>a+i.h,0)/items.length;
+  const TOL=Math.max(2,avgH*0.45);
+  const lines=[];
+  items.forEach(it=>{
+    let ln=lines.find(l=>Math.abs(l.y-it.y)<=TOL);
+    if(!ln){ln={y:it.y,items:[]};lines.push(ln);}
+    ln.items.push(it);
+  });
+  lines.sort((a,b)=>b.y-a.y);
+  return lines.map(ln=>{
+    const sorted=dir==='rtl'
+      ?[...ln.items].sort((a,b)=>b.x-a.x)
+      :[...ln.items].sort((a,b)=>a.x-b.x);
+    return sorted.map(i=>i.str).join(' ').trim();
+  }).filter(Boolean);
+}
+
+/* Unicode normalization — critical for matching Persian PDF text */
+function normalizeText(t){
+  return t
+    /* Persian/Arabic digits → ASCII */
+    .replace(/[۰-۹]/g,d=>'0123456789'['۰۱۲۳۴۵۶۷۸۹'.indexOf(d)])
+    .replace(/[٠-٩]/g,d=>'0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)])
+    /* Zero-width characters */
+    .replace(/[\u200B-\u200F\u00AD\uFEFF]/g,'')
+    /* Arabic ك,ي,ة → Persian equivalents */
+    .replace(/\u0643/g,'\u06A9')
+    .replace(/\u064A/g,'\u06CC')
+    .replace(/\u0629/g,'\u0647')
+    /* ۀ (U+06C0) → ه — variant of گزینه */
+    .replace(/\u06C0/g,'\u0647')
+    /* Normalize guillemets/quotes to a single pair for matching */
+    .replace(/[\u00AB\u2039\u201C\u201E]/g,'\u00AB')  /* → » */
+    .replace(/[\u00BB\u203A\u201D\u201F]/g,'\u00BB')  /* → « */
+    /* Collapse multiple spaces */
+    .replace(/\s+/g,' ').trim();
+}
+
+/* ══ PRODUCTION PARSER — all known real-world answer key formats ══
+   Pattern D is the exact format of the uploaded PDF and is tried first.
+   Remaining patterns are fallbacks for other PDF styles.             */
+function parseAnswerLines(lines,total){
+  const digitToOpt={'1':'الف','2':'ب','3':'ج','4':'د'};
+  const optMap={'1':'الف','2':'ب','3':'ج','4':'د',
+                'a':'الف','b':'ب','c':'ج','d':'د',
+                'A':'الف','B':'ب','C':'ج','D':'د'};
+  const key={};const conflicts=new Set();
+  function add(n,a){
+    if(!(n>=1&&n<=total)||!OPTS.includes(a))return;
+    if(key[n]!==undefined){if(key[n]!==a)conflicts.add(n);}
+    else key[n]=a;
+  }
+  /* Normalize all lines once */
+  const norm=lines.map(normalizeText);
+  const full=norm.join('\n');
+
+  /* ── PATTERN D (highest priority, exact match for this PDF format):
+     "-1 گزینه »2«"  or  "-1 گزینه «2»"  or  "-1 گزینه 2"
+     The \u00AB and \u00BB are the normalized guillemets.
+     گزینه: after ۀ→ه normalization this is always گزینه now.       */
+  const reD=/-(\d{1,3})\s+گزینه\s*[\u00AB\u00BB]?\s*([1234])\s*[\u00AB\u00BB]?/g;
+  let m;reD.lastIndex=0;
+  while((m=reD.exec(full))!==null)add(+m[1],digitToOpt[m[2]]);
+  if(Object.keys(key).length>0)return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+
+  /* ── PATTERN D2: reversed guillemets in case RTL flipped them ── */
+  const reD2=/(\d{1,3})\s*[\u00AB\u00BB]\s*([1234])\s*[\u00AB\u00BB]\s+گزینه/g;
+  reD2.lastIndex=0;
+  while((m=reD2.exec(full))!==null)add(+m[1],digitToOpt[m[2]]);
+  if(Object.keys(key).length>0)return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+
+  /* ── PATTERN A: "N الف/ب/ج/د" (Persian option words) ── */
+  const reA=/(\d{1,3})\s+(الف|ب|ج|د)(?![\u0600-\u06FF])/g;
+  reA.lastIndex=0;
+  while((m=reA.exec(full))!==null)add(+m[1],m[2]);
+  if(Object.keys(key).length>0)return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+
+  /* ── PATTERN B: "N. الف" with explicit separator ── */
+  const reB=/(\d{1,3})\s*[.\-:)=]\s*(الف|ب|ج|د)(?![\u0600-\u06FF])/g;
+  reB.lastIndex=0;
+  while((m=reB.exec(full))!==null)add(+m[1],m[2]);
+  if(Object.keys(key).length>0)return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+
+  /* ── PATTERN C: "N. 1/2/3/4" or "N. a/b/c/d" with separator ── */
+  const reC=/(\d{1,3})\s*[.\-:)=]\s*([1234abcdABCD])\b/g;
+  reC.lastIndex=0;
+  while((m=reC.exec(full))!==null){const a=optMap[m[2]];if(a)add(+m[1],a);}
+  if(Object.keys(key).length>0)return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+
+  /* ── PATTERN E: sequential token list "الف ب ج الف ..." ── */
+  const tokens=full.match(/الف|ب|ج|د|[1234]/g)||[];
+  tokens.forEach((t,i)=>{const a=optMap[t]||t;if(i+1<=total&&OPTS.includes(a))key[i+1]=a;});
+  return{key,conflicts:[...conflicts],detected:Object.keys(key).length,total};
+}
+
+/* PDF result is ALWAYS routed through the editable manual grid for human
+   verification — guarantees no fabricated answer ever reaches scoring
+   without the user seeing and confirming it. */
+function applyPdfResult(result){
+  ES.manKey={...result.key};
+  ES.key={...ES.manKey};
+  ES.hasKey=Object.keys(ES.key).length>0;
+  const missing=new Set();
+  for(let q=1;q<=ES.mode;q++)if(!(q in ES.manKey))missing.add(q);
+  ES.missingQs=missing;
+  ES.conflictQs=new Set(result.conflicts);
+  saveKeyStorage();
+  updateKeyPreview();
+  setKeyTab('manual');
+  let cls='ok';
+  let msg=`✓ از PDF، ${result.detected} از ${ES.mode} پاسخ تشخیص داده شد. در تب «دستی» همه را بررسی و در صورت نیاز اصلاح کن.`;
+  if(missing.size){
+    cls='warn';
+    const list=[...missing].slice(0,10).join('، ');
+    msg+=` ⬜ ${missing.size} سؤال تشخیص داده نشد (کادر قرمز در پایین: ${list}${missing.size>10?' ...':''}) — دستی تکمیل کن.`;
+  }
+  if(result.conflicts.length){
+    cls='warn';
+    msg+=` ⚠️ تناقض در سؤال‌های ${result.conflicts.join('، ')} (کادر زرد) — بررسی کن.`;
+  }
+  showKS('pdf',msg,cls);
+}
+
+/* ══════════════════════════════════════════════════════
+   EXAM LIFECYCLE
+══════════════════════════════════════════════════════ */
+function startExam(){
+  const cfg=EXAM_CFG[ES.mode];
+  ES.questions=[];
+  cfg.subjs.forEach(s=>{
+    for(let q=s.from;q<=s.to;q++)
+      ES.questions.push({num:q,sid:s.id,bk:s.bk,answer:null,marked:false});
+  });
+  ES.phase='running';ES.elapsed=0;ES.dur=cfg.dur;
+  ES.sheetF='all';ES.results=null;
+
+  document.getElementById('exam-setup').classList.add('hidden');
+  document.getElementById('exam-running').classList.remove('hidden');
+  document.getElementById('exam-results').classList.add('hidden');
+
+  buildAnswerSheet();
+  updateProg();
+  updateFilterCounts();
+  saveProgress();
+  startTimer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetExam(){
+  if(ES.timerId){clearInterval(ES.timerId);ES.timerId=null;}
+  lsDel(LS_PROGRESS);
+  ES.phase='setup';ES.questions=[];ES.results=null;
+  document.getElementById('exam-setup').classList.remove('hidden');
+  document.getElementById('exam-running').classList.add('hidden');
+  document.getElementById('exam-results').classList.add('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══════════════════════════════════════════════════════
+   TIMER
+══════════════════════════════════════════════════════ */
+function startTimer(){
+  updateTimerDisplay();
+  ES.timerId=setInterval(()=>{
+    ES.elapsed++;
+    updateTimerDisplay();
+    saveProgress();
+    if(ES.elapsed>=ES.dur){clearInterval(ES.timerId);ES.timerId=null;endExam(true);}
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const rem=Math.max(0,ES.dur-ES.elapsed);
+  const m=Math.floor(rem/60),s=rem%60;
+  const el=document.getElementById('eh-timer');
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className='eh-timer';
+  if(rem<=60)el.classList.add('t-crit');
+  else if(rem<=300)el.classList.add('t-warn');
+}
+
+/* ══════════════════════════════════════════════════════
+   ANSWER SHEET
+══════════════════════════════════════════════════════ */
+function buildAnswerSheet(){
+  const cfg=EXAM_CFG[ES.mode];
+  let html='';
+  cfg.subjs.forEach(s=>{
+    const cnt=s.to-s.from+1;
+    html+=`<div class="subj-divider" data-sdiv="${s.id}"><span>${s.name}</span><span class="subj-divider-info">سؤال ${s.from}–${s.to} | ${cnt} سؤال | ضریب ${s.coeff}</span></div><div class="q-rows" data-srows="${s.id}">`;
+    for(let q=s.from;q<=s.to;q++)html+=renderASRow(q);
+    html+='</div>';
+  });
+  document.getElementById('answer-sheet').innerHTML=html;
+}
+
+function renderASRow(qNum){
+  const q=ES.questions.find(x=>x.num===qNum);
+  let rowCls='q-row interactive';
+  if(q.marked)rowCls+=' is-marked';
+  else if(q.answer)rowCls+=' has-answer';
+  const opts=OPTS.map(o=>`<button class="q-opt${q.answer===o?' sel':''}" onclick="selectAnswer(${qNum},'${o}')">${o}</button>`).join('');
+  return`<div class="${rowCls}" id="as-q${qNum}"><span class="q-num">${qNum}</span><div class="q-opts">${opts}</div><button class="q-mark-btn${q.marked?' marked':''}" onclick="toggleMark(${qNum})" title="علامت‌گذاری">⚑</button></div>`;
+}
+
+function selectAnswer(qNum,opt){
+  if(ES.phase!=='running')return;
+  const q=ES.questions.find(x=>x.num===qNum);if(!q)return;
+  q.answer=(q.answer===opt)?null:opt;
+  const el=document.getElementById(`as-q${qNum}`);
+  if(el)el.outerHTML=renderASRow(qNum);
+  updateProg();updateFilterCounts();applySheetFilter();
+  saveProgress();
+}
+
+function toggleMark(qNum){
+  if(ES.phase!=='running')return;
+  const q=ES.questions.find(x=>x.num===qNum);if(!q)return;
+  q.marked=!q.marked;
+  const el=document.getElementById(`as-q${qNum}`);
+  if(el)el.outerHTML=renderASRow(qNum);
+  updateFilterCounts();applySheetFilter();
+  saveProgress();
+}
+
+function updateProg(){
+  const answered=ES.questions.filter(q=>q.answer).length;
+  const total=ES.questions.length;
+  document.getElementById('eh-prog-txt').textContent=`${answered} از ${total} پاسخ داده`;
+  document.getElementById('eh-pbar').style.width=`${total?(answered/total*100):0}%`;
+}
+
+function updateFilterCounts(){
+  const qs=ES.questions;
+  document.getElementById('sfc-all').textContent=qs.length;
+  document.getElementById('sfc-blank').textContent=qs.filter(q=>!q.answer).length;
+  document.getElementById('sfc-marked').textContent=qs.filter(q=>q.marked).length;
+  document.getElementById('sfc-answered').textContent=qs.filter(q=>q.answer).length;
+}
+
+function filterSheet(f){
+  ES.sheetF=f;
+  ['all','blank','marked','answered'].forEach(k=>document.getElementById(`sf-${k}`).classList.toggle('active',k===f));
+  applySheetFilter();
+}
+
+function applySheetFilter(){
+  const f=ES.sheetF,cfg=EXAM_CFG[ES.mode];
+  ES.questions.forEach(q=>{
+    const row=document.getElementById(`as-q${q.num}`);if(!row)return;
+    let show=true;
+    if(f==='blank')show=!q.answer;
+    else if(f==='marked')show=q.marked;
+    else if(f==='answered')show=!!q.answer;
+    row.style.display=show?'':'none';
+  });
+  cfg.subjs.forEach(s=>{
+    const div=document.querySelector(`[data-sdiv="${s.id}"]`);
+    const rows=document.querySelector(`[data-srows="${s.id}"]`);
+    if(!div||!rows)return;
+    const hasVis=[...rows.querySelectorAll('.q-row')].some(r=>r.style.display!=='none');
+    div.style.display=hasVis?'':'none';
+    rows.style.display=hasVis?'':'none';
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   CONFIRM DIALOG
+══════════════════════════════════════════════════════ */
+function confirmEnd(){
+  const answered=ES.questions.filter(q=>q.answer).length;
+  document.getElementById('dlg-msg').textContent=`${answered} از ${ES.questions.length} سؤال پاسخ داده‌ای. بعد از پایان امکان ویرایش نیست.`;
+  document.getElementById('confirm-overlay').classList.remove('hidden');
+  _confirmCb=yes=>{if(yes)endExam(false);};
+}
+
+function doConfirm(yes){
+  document.getElementById('confirm-overlay').classList.add('hidden');
+  if(_confirmCb)_confirmCb(yes);
+  _confirmCb=null;
+}
+
+/* ══════════════════════════════════════════════════════
+   CORRECTION ENGINE
+══════════════════════════════════════════════════════ */
+function endExam(auto){
+  if(ES.phase!=='running')return;
+  if(ES.timerId){clearInterval(ES.timerId);ES.timerId=null;}
+  ES.phase='ended';
+  ES.results=correctExam();
+  lsDel(LS_PROGRESS); /* clear in-progress snapshot */
+  saveHistoryEntry(); /* persist to history */
+  document.getElementById('exam-running').classList.add('hidden');
+  document.getElementById('exam-results').classList.remove('hidden');
+  renderExamResults();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function correctExam(){
+  const cfg=EXAM_CFG[ES.mode];
+  const qRes={};
+  ES.questions.forEach(q=>{
+    const ka=ES.hasKey?ES.key[q.num]:null;
+    if(!ka)qRes[q.num]=q.answer?'no-key':'blank';
+    else if(!q.answer)qRes[q.num]='blank';
+    else if(q.answer===ka)qRes[q.num]='correct';
+    else qRes[q.num]='wrong';
+  });
+  const sStat={};
+  cfg.subjs.forEach(s=>{
+    let c=0,w=0,b=0,nk=0;
+    for(let q=s.from;q<=s.to;q++){
+      const r=qRes[q];
+      if(r==='correct')c++;
+      else if(r==='wrong')w++;
+      else if(r==='blank')b++;
+      else nk++;
+    }
+    const tot=s.to-s.from+1,net=r2(c-w/3);
+    sStat[s.id]={...s,c,w,b,nk,tot,net,wt:r2(net*s.coeff),pct:r2((net/tot)*100)};
+  });
+  const totalC=Object.values(qRes).filter(r=>r==='correct').length;
+  const totalW=Object.values(qRes).filter(r=>r==='wrong').length;
+  const totalB=Object.values(qRes).filter(r=>r==='blank').length;
+  const totalN=ES.questions.length;
+  const ansCount=ES.questions.filter(q=>q.answer).length;
+  const ansPct=r2((ansCount/totalN)*100);
+  const b1S=cfg.subjs.filter(s=>s.bk==='b1');
+  const b2S=cfg.subjs.filter(s=>s.bk==='b2');
+  let p1=null,p2=null;
+  if(b1S.length){
+    const realWsum=b1S.reduce((a,s)=>a+(s.to-s.from+1)*s.coeff,0);
+    const wtot=b1S.reduce((a,s)=>a+(sStat[s.id]?.wt||0),0);
+    p1=r2((wtot/realWsum)*100);
+  }
+  if(b2S.length){
+    const b2tot=b2S.reduce((a,s)=>a+(s.to-s.from+1),0);
+    const b2net=b2S.reduce((a,s)=>a+(sStat[s.id]?.net||0),0);
+    p2=r2((b2net/b2tot)*100);
+  }
+  const combined=combPct(p1,p2),tarzEst=Math.round(combined*1000);
+  return{qRes,sStat,totalC,totalW,totalB,totalN,ansCount,ansPct,p1,p2,combined,tarzEst,hasKey:ES.hasKey};
+}
+
+/* ══════════════════════════════════════════════════════
+   EXAM RESULTS
+══════════════════════════════════════════════════════ */
+function renderExamResults(){
+  const R=ES.results;
+  if(R.hasKey){
+    document.getElementById('erh-score').textContent=`${R.combined.toFixed(2)}%`;
+    document.getElementById('erh-sub').textContent=`درصد کل | تراز برآوردی: ${R.tarzEst.toLocaleString('fa-IR')}`;
+  }else{
+    document.getElementById('erh-score').textContent=`${R.ansCount}/${R.totalN}`;
+    document.getElementById('erh-sub').textContent='سؤال پاسخ داده شد (بدون پاسخنامه — تصحیح انجام نشد)';
+  }
+  document.getElementById('btn-send-calc').style.display=R.hasKey?'':'none';
+  const cards=[];
+  if(R.hasKey){
+    cards.push({lbl:'کل درست',val:R.totalC,sub:`از ${R.totalN}`});
+    cards.push({lbl:'کل غلط',val:R.totalW,sub:`−${r2(R.totalW/3)} نمره`});
+    cards.push({lbl:'نزده',val:R.totalB,sub:'سؤال'});
+    cards.push({lbl:'درصد پاسخ‌دهی',val:`${R.ansPct}%`,sub:`${R.ansCount} پاسخ`});
+    if(R.p1!=null)cards.push({lbl:'درصد دفترچه ۱',val:`${R.p1.toFixed(1)}%`,sub:'تحصیلی',hl:true});
+    if(R.p2!=null)cards.push({lbl:'درصد دفترچه ۲',val:`${R.p2.toFixed(1)}%`,sub:'تحلیلی',hl:true});
+    cards.push({lbl:'درصد کل',val:`${R.combined.toFixed(2)}%`,sub:'ترکیبی',hl:true});
+    cards.push({lbl:'تراز برآوردی',val:R.tarzEst.toLocaleString('fa-IR'),sub:'⚠️ برآوردی'});
+  }else{
+    cards.push({lbl:'پاسخ داده',val:R.ansCount,sub:`از ${R.totalN}`});
+    cards.push({lbl:'نزده',val:R.totalN-R.ansCount,sub:'سؤال'});
+    cards.push({lbl:'درصد پاسخ‌دهی',val:`${R.ansPct}%`,sub:'بدون تصحیح'});
+  }
+  document.getElementById('er-cards').innerHTML=cards.map(c=>`<div class="score-card${c.hl?' hl':''}"><div class="sc-label">${c.lbl}</div><div class="sc-value">${c.val}</div><div class="sc-sub">${c.sub||''}</div></div>`).join('');
+  if(R.hasKey){
+    const cfg=EXAM_CFG[ES.mode];
+    let tbl=`<div class="card"><div class="card-title">جزئیات درس‌ها</div><div style="overflow-x:auto"><table class="res-table"><thead><tr><th>درس</th><th>درست</th><th>غلط</th><th>نزده</th><th>ضریب</th><th>نمره خالص</th><th>درصد</th><th>امتیاز وزنی</th></tr></thead><tbody>`;
+    cfg.subjs.forEach(s=>{
+      const st=R.sStat[s.id];if(!st)return;
+      const cls=st.pct>=60?'good':st.pct>=30?'mid':'bad';
+      const bw=Math.max(0,Math.min(100,st.pct));
+      tbl+=`<tr><td>${st.name}</td><td>${st.c}</td><td>${st.w}</td><td>${st.b}</td><td><b>${st.coeff}</b></td><td>${st.net.toFixed(2)}</td><td><div class="pct-bar"><div class="pct-fill" style="width:${bw}%;max-width:55px"></div><span class="pct-val ${cls}">${st.pct.toFixed(1)}%</span></div></td><td>${st.wt.toFixed(2)}</td></tr>`;
+    });
+    tbl+=`</tbody></table></div><div class="formula-box" style="margin-top:10px">فرمول: <code>نمره خالص = درست − (غلط÷۳)</code> | امتیاز وزنی = <code>نمره×ضریب</code> | ⚠️ تراز رسمی به داده‌های آماری همان آزمون نیاز دارد.</div></div>`;
+    document.getElementById('er-subj-block').innerHTML=tbl;
+  }else{
+    document.getElementById('er-subj-block').innerHTML='<div class="card" style="font-size:12px;color:var(--t2)">برای جزئیات درس‌ها، پاسخنامه را وارد کن و آزمون جدید شروع کن.</div>';
+  }
+  buildExamInsights(R);
+  buildResultSheet();
+}
+
+function buildExamInsights(R){
+  const items=[];
+  if(!R.hasKey){
+    items.push({cls:'info',title:'بدون تصحیح',text:'پاسخنامه وارد نشد. برای آزمون بعدی پاسخنامه را از قبل وارد کن.'});
+  }else{
+    const acc=R.totalN>0?r2((R.totalC/R.totalN)*100):0;
+    if(acc>=70)items.push({cls:'good',title:'دقت بالا',text:`${acc}% از کل سؤالات درست.`});
+    else if(acc>=40)items.push({cls:'info',title:'دقت متوسط',text:`${acc}% — جای بهبود دارد.`});
+    else items.push({cls:'bad',title:'دقت پایین',text:`${acc}% — حدس‌های اشتباه زیاد.`});
+    const negImp=r2(R.totalW/3);
+    if(negImp>5)items.push({cls:'warn',title:'اثر منفی زیاد',text:`${R.totalW} غلط = −${negImp} نمره از دست رفت.`});
+    const blankR=r2((R.totalB/R.totalN)*100);
+    if(blankR>30)items.push({cls:'warn',title:'نزده زیاد',text:`${blankR}% نزده — مدیریت زمان را بهبود بده.`});
+    const cfg=EXAM_CFG[ES.mode];
+    if(cfg.subjs.length>1){
+      const byPct=cfg.subjs.map(s=>({s,pct:R.sStat[s.id]?.pct||0})).sort((a,b)=>b.pct-a.pct);
+      items.push({cls:'good',title:`بهترین: ${byPct[0].s.name}`,text:`${byPct[0].pct.toFixed(1)}%`});
+      const worst=byPct[byPct.length-1];
+      if(worst.pct<40)items.push({cls:'bad',title:`ضعیف‌ترین: ${worst.s.name}`,text:`${worst.pct.toFixed(1)}% — نیاز فوری به تقویت.`});
+      const wkHigh=cfg.subjs.filter(s=>s.coeff>=2).map(s=>({s,pct:R.sStat[s.id]?.pct||0})).sort((a,b)=>a.pct-b.pct)[0];
+      if(wkHigh&&wkHigh.pct<50)items.push({cls:'warn',title:`ضریب بالا ضعیف: ${wkHigh.s.name}`,text:`ضریب ${wkHigh.s.coeff} با ${wkHigh.pct.toFixed(1)}% — اثر مستقیم بر درصد کل.`});
+    }
+    if(R.combined>=65)items.push({cls:'good',title:'نتیجه عالی',text:`${R.combined.toFixed(1)}% — احتمال قبولی بالا.`});
+    else if(R.combined>=45)items.push({cls:'info',title:'نتیجه متوسط',text:`${R.combined.toFixed(1)}% — با تمرین بیشتر بهتر می‌شود.`});
+    else items.push({cls:'bad',title:'نیاز به کار جدی‌تر',text:`${R.combined.toFixed(1)}% — برنامه‌ریزی منظم لازم است.`});
+  }
+  document.getElementById('er-insights').innerHTML=items.slice(0,8).map(it=>`<li class="insight-item ${it.cls}"><span class="insight-title">${it.title}</span>${it.text}</li>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   RESULT SHEET (LOCKED + COLORIZED)
+   IDs: rs-q{num} — different from as-q{num} — no conflict
+══════════════════════════════════════════════════════ */
+function buildResultSheet(){
+  const cfg=EXAM_CFG[ES.mode];
+  let html='';
+  cfg.subjs.forEach(s=>{
+    html+=`<div class="subj-divider"><span>${s.name}</span><span class="subj-divider-info">سؤال ${s.from}–${s.to}</span></div><div class="q-rows" data-rsrows="${s.id}">`;
+    for(let q=s.from;q<=s.to;q++)html+=renderRSRow(q);
+    html+='</div>';
+  });
+  document.getElementById('result-sheet').innerHTML=html;
+  ES.resultF='all';
+  ['all','wrong','blank','correct'].forEach(f=>document.getElementById(`rs-${f}`).classList.toggle('active',f==='all'));
+}
+
+function renderRSRow(qNum){
+  const q=ES.questions.find(x=>x.num===qNum);
+  const R=ES.results;
+  const res=R?.qRes?.[qNum]||'blank';
+  let rowCls='q-row';
+  if(res==='correct')rowCls+=' r-correct';
+  else if(res==='wrong')rowCls+=' r-wrong';
+  const opts=OPTS.map(o=>{
+    let cls='q-opt';
+    if(q.answer===o){
+      if(res==='correct')cls+=' opt-c';
+      else if(res==='wrong')cls+=' opt-w';
+      else cls+=' sel';
+    }
+    if(ES.hasKey&&ES.key[qNum]===o&&q.answer!==o)cls+=' opt-ckey';
+    return`<button class="${cls}" disabled>${o}</button>`;
+  }).join('');
+  let icon='';
+  if(res==='correct')icon='<span class="q-res-icon">✅</span>';
+  else if(res==='wrong')icon='<span class="q-res-icon">❌</span>';
+  else icon='<span class="q-res-icon" style="color:var(--t3)">⬜</span>';
+  return`<div class="${rowCls}" id="rs-q${qNum}" data-res="${res}"><span class="q-num">${qNum}</span><div class="q-opts">${opts}</div>${icon}</div>`;
+}
+
+function filterRS(f){
+  ES.resultF=f;
+  ['all','wrong','blank','correct'].forEach(k=>document.getElementById(`rs-${k}`).classList.toggle('active',k===f));
+  ES.questions.forEach(q=>{
+    const row=document.getElementById(`rs-q${q.num}`);if(!row)return;
+    const res=row.dataset.res;
+    let show=true;
+    if(f==='wrong')show=res==='wrong';
+    else if(f==='blank')show=res==='blank';
+    else if(f==='correct')show=res==='correct';
+    row.style.display=show?'':'none';
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   SEND TO CALCULATOR
+══════════════════════════════════════════════════════ */
+function sendToCalc(){
+  if(!ES.results?.hasKey)return;
+  const R=ES.results,cfg=EXAM_CFG[ES.mode];
+  setAppTab('calc');
+  const hasB1=cfg.subjs.some(s=>s.bk==='b1');
+  const hasB2=cfg.subjs.some(s=>s.bk==='b2');
+  if(hasB1&&hasB2)setMode('both');
+  else if(hasB1)setMode('b1');
+  else setMode('b2');
+  if(hasB1){
+    SUBJECTS.forEach(s=>{
+      const st=R.sStat[s.id];if(!st)return;
+      const cEl=document.getElementById(`${s.id}-c`),wEl=document.getElementById(`${s.id}-w`),bEl=document.getElementById(`${s.id}-b`);
+      if(cEl)cEl.value=st.c;if(wEl)wEl.value=st.w;if(bEl)bEl.value=st.b;
+      validateSubj(s.id);
+    });
+  }
+  if(hasB2){
+    const st=R.sStat['aptitude'];
+    if(st){
+      const cEl=document.getElementById('b2-c'),wEl=document.getElementById('b2-w'),bEl=document.getElementById('b2-b');
+      if(cEl)cEl.value=st.c;if(wEl)wEl.value=st.w;if(bEl)bEl.value=st.b;
+      validateB2();
+    }
+  }
+  setTimeout(()=>{
+    calculate();
+    document.getElementById('results-sec').scrollIntoView({behavior:'smooth',block:'start'});
+  },120);
+}
+
+/* ══ BOOT ══ */
+
+/* ══════════════════════════════════════════════════════
+   RESUME PROGRESS — restore mid-exam state after reload
+══════════════════════════════════════════════════════ */
+function checkResumeProgress(){
+  const saved=lsGet(LS_PROGRESS,null);
+  if(!saved)return;
+  const ageMin=(Date.now()-saved.savedAt)/60000;
+  if(ageMin>saved.dur/60+30){lsDel(LS_PROGRESS);return;} /* stale */
+  ES.mode=saved.mode;ES.questions=saved.questions;
+  ES.elapsed=saved.elapsed;ES.dur=saved.dur;
+  ES.key=saved.key||{};ES.hasKey=!!saved.hasKey;
+  ES.phase='running';ES.sheetF='all';ES.results=null;
+  [125,75,50].forEach(x=>document.getElementById(`em-${x}`).classList.toggle('sel',x===ES.mode));
+  setAppTab('exam');
+  document.getElementById('exam-setup').classList.add('hidden');
+  document.getElementById('exam-running').classList.remove('hidden');
+  buildAnswerSheet();updateProg();updateFilterCounts();
+  document.getElementById('exam-mode-label') && (document.getElementById('exam-mode-label').textContent=EXAM_CFG[ES.mode].label);
+  startTimer();
+  window.scrollTo({top:0,behavior:'smooth'});
+  /* Small banner to inform user */
+  const banner=document.createElement('div');
+  banner.style.cssText='position:fixed;bottom:16px;right:16px;background:var(--primary);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;z-index:500;box-shadow:0 4px 20px rgba(0,0,0,.2)';
+  banner.textContent='آزمون ناتمام بارگذاری شد ✓';
+  document.body.appendChild(banner);
+  setTimeout(()=>banner.remove(),3000);
+}
+
+/* ══════════════════════════════════════════════════════
+   HISTORY — save & display exam records
+══════════════════════════════════════════════════════ */
+function saveHistoryEntry(){
+  if(!ES.results)return;
+  const R=ES.results;
+  const cfg=EXAM_CFG[ES.mode];
+  const entry={
+    id:Date.now(),
+    mode:ES.mode,
+    label:cfg.label,
+    date:new Date().toLocaleString('fa-IR'),
+    hasKey:R.hasKey,
+    combined:R.combined,
+    tarzEst:R.tarzEst,
+    p1:R.p1,p2:R.p2,
+    totalC:R.totalC,totalW:R.totalW,totalB:R.totalB,totalN:R.totalN,
+    ansCount:R.ansCount,ansPct:R.ansPct,
+    sStat:R.sStat,
+    questions:ES.questions.map(q=>({num:q.num,answer:q.answer,sid:q.sid})),
+    key:ES.key,
+  };
+  const hist=lsGet(LS_HISTORY,[]);
+  hist.unshift(entry);
+  if(hist.length>50)hist.length=50; /* keep last 50 */
+  lsSet(LS_HISTORY,hist);
+}
+
+function renderHistList(){
+  const hist=lsGet(LS_HISTORY,[]);
+  const el=document.getElementById('hist-list');
+  if(!hist.length){
+    el.innerHTML='<div class="card" style="color:var(--t3);font-size:13px;text-align:center;padding:32px">هنوز هیچ آزمونی ذخیره نشده است.</div>';
+    return;
+  }
+  el.innerHTML=hist.map(h=>{
+    const scoreHTML=h.hasKey
+      ?`<div class="hi-val">${h.combined.toFixed(1)}%</div><div class="hi-sub">درصد کل</div>`
+      :`<div class="hi-val">${h.ansCount}/${h.totalN}</div><div class="hi-sub">پاسخ داده</div>`;
+    const correctHTML=h.hasKey?`<span style="color:var(--good);font-weight:700">${h.totalC}✓</span> <span style="color:var(--bad)">${h.totalW}✗</span> <span style="color:var(--t3)">${h.totalB}⬜</span>`:'—';
+    return`<div class="card">
+      <div class="hist-item">
+        <div>
+          <div class="hist-item-meta">${h.label} — ${h.date}</div>
+          <div class="hist-item-date">${correctHTML}</div>
+        </div>
+        <div class="hist-item-score">${scoreHTML}</div>
+        <div class="hist-item-actions">
+          <button class="btn-soft primary" onclick="viewHistEntry(${h.id})">جزئیات</button>
+          <button class="btn-soft danger" onclick="deleteHistEntry(${h.id})">حذف</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewHistEntry(id){
+  const hist=lsGet(LS_HISTORY,[]);
+  const h=hist.find(x=>x.id===id);if(!h)return;
+  const cfg=EXAM_CFG[h.mode];
+  let subjHTML='';
+  if(h.hasKey&&h.sStat){
+    subjHTML='<div class="card" style="margin-top:12px"><div class="card-title">جزئیات درس‌ها</div><div style="overflow-x:auto"><table class="res-table"><thead><tr><th>درس</th><th>درست</th><th>غلط</th><th>نزده</th><th>ضریب</th><th>درصد</th></tr></thead><tbody>';
+    cfg.subjs.forEach(s=>{
+      const st=h.sStat[s.id];if(!st)return;
+      const cls=st.pct>=60?'good':st.pct>=30?'mid':'bad';
+      subjHTML+=`<tr><td>${st.name}</td><td>${st.c}</td><td>${st.w}</td><td>${st.b}</td><td>${st.coeff}</td><td><span class="pct-val ${cls}">${st.pct.toFixed(1)}%</span></td></tr>`;
+    });
+    subjHTML+='</tbody></table></div></div>';
+  }
+  const cards=h.hasKey?[
+    {lbl:'درست',val:h.totalC,sub:`از ${h.totalN}`},
+    {lbl:'غلط',val:h.totalW,sub:`−${r2(h.totalW/3)} نمره`},
+    {lbl:'نزده',val:h.totalB,sub:'سؤال'},
+    {lbl:'درصد کل',val:`${h.combined.toFixed(2)}%`,sub:'ترکیبی',hl:true},
+    {lbl:'تراز برآوردی',val:(h.tarzEst||0).toLocaleString('fa-IR'),sub:'برآوردی'},
+  ]:[
+    {lbl:'پاسخ داده',val:h.ansCount,sub:`از ${h.totalN}`},
+    {lbl:'نزده',val:h.totalN-h.ansCount,sub:'سؤال'},
+    {lbl:'درصد پاسخ',val:`${h.ansPct}%`,sub:'بدون تصحیح'},
+  ];
+  const detail=document.getElementById('hist-detail');
+  detail.innerHTML=`
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:15px;font-weight:800;color:var(--primary-d)">${h.label}</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px">${h.date}</div>
+      </div>
+      <button class="btn-soft primary" onclick="backToHistList()">← بازگشت به لیست</button>
+    </div>
+    <div class="score-cards">${cards.map(c=>`<div class="score-card${c.hl?' hl':''}"><div class="sc-label">${c.lbl}</div><div class="sc-value">${c.val}</div><div class="sc-sub">${c.sub||''}</div></div>`).join('')}</div>
+    ${subjHTML}
+  `;
+  document.getElementById('hist-list-wrap').classList.add('hidden');
+  detail.classList.remove('hidden');
+}
+
+function backToHistList(){
+  document.getElementById('hist-detail').classList.add('hidden');
+  document.getElementById('hist-list-wrap').classList.remove('hidden');
+}
+
+function deleteHistEntry(id){
+  let hist=lsGet(LS_HISTORY,[]);
+  hist=hist.filter(x=>x.id!==id);
+  lsSet(LS_HISTORY,hist);
+  renderHistList();
+}
+
+function clearAllHistory(){
+  lsDel(LS_HISTORY);
+  renderHistList();
+}
+
+/* ══ BOOT ══ */
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
