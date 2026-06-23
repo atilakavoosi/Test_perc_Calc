@@ -832,7 +832,7 @@ function calcTarz(){
   if(custom){
     const M=parseFloat(document.getElementById('tarz-m').value),SD=parseFloat(document.getElementById('tarz-sd').value);
     if(!isFinite(M)||!isFinite(SD)||SD<=0){out.innerHTML='<p style="font-size:12px;color:var(--t3);margin-top:8px">میانگین و SD معتبر وارد کن.</p>';return;}
-    const T=Math.round(1000*((pct-M)/SD)+5000);
+const T = Math.round(10000 + ((pct - M) / SD) * 1500);
     out.innerHTML=`<div class="tarz-result-card"><div class="trc-label">تراز آماری</div><div class="trc-val">${T.toLocaleString('fa-IR')}</div><div class="trc-note">M=${M} | SD=${SD} | فرمول: T=1000×((X−M)÷SD)+5000</div></div>`;
   }else{
     const T=Math.round(pct*1000);
